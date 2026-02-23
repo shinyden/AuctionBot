@@ -2,7 +2,7 @@ import os
 import discord
 
 # ─── Bot Settings ─────────────────────────────────────────────────────────────
-DISCORD_TOKEN   = os.getenv("DISCORD_TOKEN")
+DISCORD_TOKEN   = os.getenv("DISCORD_BOT_TOKEN")
 MONGO_URI       = os.getenv("MONGO_URI")
 MONGO_DB_NAME   = os.getenv("MONGO_DB_NAME", "poketwo")
 MONGO_COLLECTION = os.getenv("MONGO_COLLECTION", "auctions")
