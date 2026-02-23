@@ -413,7 +413,7 @@ class Graph(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
-    @commands.hybrid_command(name="graph", aliases=["g", "price", "chart"])
+    @commands.hybrid_command(name="graph", aliases=["g", "chart"])
     @app_commands.describe(filters="Same filters as auction search e.g: --name pikachu --shiny --iv >80")
     async def graph_command(self, ctx: commands.Context, *, filters: str = ""):
         """
