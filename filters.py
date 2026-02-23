@@ -218,6 +218,15 @@ FLAG_DEFINITIONS: dict[str, dict] = {
         "mongo_field": "bdr",
     },
 
+    # ── Gender ────────────────────────────────────────────────────────────────
+    "--gender": {
+        "aliases":     ["--sex","--g"],
+        "takes_arg":   True,
+        "multi":       False,
+        "help":        "Gender: male, female, unknown",
+        "mongo_field": "gen",
+    },
+
     # ── Sort ──────────────────────────────────────────────────────────────────
     "--sort": {
         "aliases":     ["--orderby", "--order", "--or"],
