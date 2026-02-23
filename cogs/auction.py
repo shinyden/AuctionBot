@@ -280,7 +280,7 @@ def create_info_view(record: dict) -> discord.ui.LayoutView:
 # HELP VIEW
 # ─────────────────────────────────────────────────────────────────────────────
 
-def create_help_view() -> discord.ui.LayoutView:
+def create_help_view(page: int = 0) -> discord.ui.LayoutView:
     from categories import list_categories
 
     flag_lines = []
@@ -307,23 +307,78 @@ def create_help_view() -> discord.ui.LayoutView:
         f"{REPLY} `j!a i 1544762`"
     )
 
-    class HelpView(discord.ui.LayoutView):
-        container = discord.ui.Container(
-            discord.ui.TextDisplay(content="## 📖 Auction Bot — Help"),
+    CHUNK_SIZE = 15
+    flag_chunks = [flag_lines[i:i+CHUNK_SIZE] for i in range(0, len(flag_lines), CHUNK_SIZE)]
+    max_page = len(flag_chunks) - 1  # last page is categories+examples
+
+    # Clamp page
+    page = max(0, min(page, max_page + 1))  # +1 for the categories/examples page
+
+    TOTAL_PAGES = max_page + 2  # filter pages + 1 final page
+
+    class PrevBtn(discord.ui.Button):
+        def __init__(self):
+            super().__init__(
+                style=discord.ButtonStyle.secondary,
+                label="◀ Prev",
+                custom_id="h_prev",
+                disabled=(page == 0),
+            )
+        async def callback(self, interaction: discord.Interaction):
+            await interaction.response.edit_message(view=create_help_view(page - 1))
+
+    class NextBtn(discord.ui.Button):
+        def __init__(self):
+            super().__init__(
+                style=discord.ButtonStyle.secondary,
+                label="Next ▶",
+                custom_id="h_next",
+                disabled=(page >= TOTAL_PAGES - 1),
+            )
+        async def callback(self, interaction: discord.Interaction):
+            await interaction.response.edit_message(view=create_help_view(page + 1))
+
+    header = discord.ui.Container(
+        discord.ui.TextDisplay(content="## 📖 Auction Bot — Help"),
+        discord.ui.Separator(visible=True, spacing=discord.SeparatorSpacing.small),
+        discord.ui.TextDisplay(content=(
+            "**Commands:**\n"
+            f"{REPLY} `j!a s [flags]` or `/auction search` — search auctions\n"
+            f"{REPLY} `j!a i <id>` or `/auction info` — full auction info"
+        )),
+        accent_colour=config.EMBED_COLOR,
+    )
+
+    # ── Page: filters ─────────────────────────────────────────────────────────
+    if page <= max_page:
+        chunk = flag_chunks[page]
+        page_label = f"Page {page + 1}/{TOTAL_PAGES}"
+        body = discord.ui.Container(
+            discord.ui.TextDisplay(
+                content=f"**🔍 Filters** _{page_label}_\n" + "\n".join(chunk)
+            ),
             discord.ui.Separator(visible=True, spacing=discord.SeparatorSpacing.small),
-            discord.ui.TextDisplay(content=(
-                "**Commands:**\n"
-                f"{REPLY} `j!a s [flags]` or `/auction search` — search auctions\n"
-                f"{REPLY} `j!a i <id>` or `/auction info` — full auction info"
-            )),
-            discord.ui.Separator(visible=True, spacing=discord.SeparatorSpacing.small),
-            discord.ui.TextDisplay(content="**🔍 Filters:**\n" + "\n".join(flag_lines)),
-            discord.ui.Separator(visible=True, spacing=discord.SeparatorSpacing.small),
-            discord.ui.TextDisplay(content="**📦 Categories (`--category`):**\n" + "\n".join(cat_lines)),
-            discord.ui.Separator(visible=True, spacing=discord.SeparatorSpacing.small),
-            discord.ui.TextDisplay(content="**💡 Examples:**\n" + examples),
+            discord.ui.ActionRow(PrevBtn(), NextBtn()),
             accent_colour=config.EMBED_COLOR,
         )
+
+    # ── Page: categories + examples ───────────────────────────────────────────
+    else:
+        page_label = f"Page {page + 1}/{TOTAL_PAGES}"
+        body = discord.ui.Container(
+            discord.ui.TextDisplay(
+                content=f"**📦 Categories (`--category`)** _{page_label}_\n" + "\n".join(cat_lines)
+            ),
+            discord.ui.Separator(visible=True, spacing=discord.SeparatorSpacing.small),
+            discord.ui.TextDisplay(content="**💡 Examples:**\n" + examples),
+            discord.ui.Separator(visible=True, spacing=discord.SeparatorSpacing.small),
+            discord.ui.ActionRow(PrevBtn(), NextBtn()),
+            accent_colour=config.EMBED_COLOR,
+        )
+
+    class HelpView(discord.ui.LayoutView):
+        c1 = header
+        c2 = body
         def __init__(self):
             super().__init__(timeout=180)
 
