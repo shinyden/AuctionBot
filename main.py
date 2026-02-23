@@ -29,6 +29,7 @@ log = logging.getLogger("main")
 COGS = [
     "cogs.auction",
     "cogs.graph",
+    "cogs.price",
     "cogs.stats",
 ]
 
