@@ -221,7 +221,7 @@ def parse_numeric_operator(val: str, field: str) -> dict | None:
         if "-" in val and not val.startswith("-"):
             lo, hi = val.split("-", 1)
             return {field: {"$gte": float(lo), "$lte": float(hi)}}
-        return {field: {"$gte": float(val)}}  # fallback: at-least
+        return {field: {"$eq": float(val)}}  # fallback: at-least
     except ValueError:
         return None
 
@@ -411,6 +411,24 @@ def build_query(raw_args: list[str]) -> tuple[dict, list]:
             and_clauses.append({
                 "mv": {"$elemMatch": {"$regex": f"^{re.escape(val)}$", "$options": "i"}}
             })
+            continue
+
+        # ── Gender ───────────────────────────────────────────────────────────────
+        if canonical == "--gender":
+            gender_map = {
+                "male":    "Male",
+                "m":       "Male",
+                "female":  "Female",
+                "f":       "Female",
+                "unknown": "Unknown",
+                "unk":     "Unknown",
+                "none":    "Unknown",
+            }
+            mapped = gender_map.get(val.strip().lower())
+            if mapped:
+                query["gen"] = {"$regex": f"^{re.escape(mapped)}$", "$options": "i"}
+            else:
+                query["gen"] = {"$regex": re.escape(val), "$options": "i"}
             continue
 
         # ── Bidder ───────────────────────────────────────────────────────────
