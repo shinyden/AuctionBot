@@ -378,7 +378,13 @@ def build_query(raw_args: list[str]) -> tuple[dict, list]:
         if canonical == "--category":
             cat = resolve_category(val)
             if cat:
-                query["pn"] = {"$in": cat["pokemon"]}   # pn = pokemon_name
+                new_set = set(cat["pokemon"])
+                existing_in = query.get("pn", {}).get("$in")
+                if existing_in is not None:
+                    # intersect: only keep pokémon common to both categories
+                    query["pn"] = {"$in": list(set(existing_in) & new_set)}
+                else:
+                    query["pn"] = {"$in": list(new_set)}
             continue
 
         # ── Evo family ───────────────────────────────────────────────────────
@@ -387,7 +393,8 @@ def build_query(raw_args: list[str]) -> tuple[dict, list]:
             if family:
                 existing_in = query.get("pn", {}).get("$in")
                 if existing_in is not None:
-                    query["pn"] = {"$in": list(set(existing_in) & family)}
+                    # union: add all family members not already present
+                    query["pn"] = {"$in": list(set(existing_in) | family)}
                 else:
                     query["pn"] = {"$in": list(family)}
             continue
@@ -395,10 +402,13 @@ def build_query(raw_args: list[str]) -> tuple[dict, list]:
         # ── Name (multi-language) ─────────────────────────────────────────────
         if canonical == "--name":
             resolved = resolve_pokemon_name(val)
-            if resolved:
-                query["pn"] = {"$regex": f"^{re.escape(resolved)}$", "$options": "i"}
+            matched = resolved if resolved else val
+            existing_in = query.get("pn", {}).get("$in")
+            if existing_in is not None:
+                # already has $in from a previous --name; append
+                existing_in.append(matched)
             else:
-                query["pn"] = {"$regex": re.escape(val), "$options": "i"}
+                query["pn"] = {"$in": [matched]}
             continue
 
         # ── Nature ───────────────────────────────────────────────────────────
