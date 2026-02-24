@@ -56,4 +56,4 @@ CDN_MAPPING_CSV_FILE  = DATA_DIR / "pokemon_cdn_mapping.csv"
 # ─── IV Bar Settings ──────────────────────────────────────────────────────────
 IV_BAR_FILLED  = "█"
 IV_BAR_EMPTY   = "░"
-IV_BAR_LENGTH  = 10
+IV_BAR_LENGTH  = 17
