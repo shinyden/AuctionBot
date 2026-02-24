@@ -53,6 +53,10 @@ _DISCORD_TAG = {
 
 MAX_POINTS = 800
 
+# Only include auctions from this year onwards when building graphs.
+# Change this value to shift the global cutoff.
+GRAPH_START_YEAR = 2024
+
 
 # ─────────────────────────────────────────────────────────────────────────────
 # HELPERS
@@ -463,9 +467,12 @@ class Graph(commands.Cog):
         else:
             await ctx.typing()
 
+        # Apply global year cutoff — only auctions from GRAPH_START_YEAR onwards
+        year_ts = int(datetime(GRAPH_START_YEAR, 1, 1, tzinfo=timezone.utc).timestamp())
+
         # Sort newest-first so --limit keeps the most recent N records
         cursor = _col.find(
-            {**query, "ts": {"$exists": True}, "bid": {"$exists": True}},
+            {**query, "ts": {"$gte": year_ts, "$exists": True}, "bid": {"$exists": True}},
             projection,
         ).sort("ts", -1)
 
