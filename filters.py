@@ -236,14 +236,14 @@ FLAG_DEFINITIONS: dict[str, dict] = {
 
     # ── Exclusion booleans ────────────────────────────────────────────────────
     "--noshiny": {
-        "aliases":     ["--nonshiny", "--excludeshiny", "--ns"],
+        "aliases":     ["--nonshiny", "--excludeshiny", "--nosh"],
         "takes_arg":   False,
         "multi":       False,
         "help":        "Exclude shiny Pokémon",
         "mongo_field": "sh",
     },
     "--nogmax": {
-        "aliases":     ["--nongmax", "--excludegmax", "--ng"],
+        "aliases":     ["--nongmax", "--excludegmax", "--nogm"],
         "takes_arg":   False,
         "multi":       False,
         "help":        "Exclude Gigantamax Pokémon",
