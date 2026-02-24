@@ -37,7 +37,6 @@ _db    = _mongo[config.MONGO_DB_NAME]
 _col   = _db[config.MONGO_COLLECTION]
 
 # ─── Message URL template ──────────────────────────────────────────────────────
-# Built from the stored message ID (mid); no need to store the full URL anymore.
 _MSG_URL_TEMPLATE = "https://discord.com/channels/716390832034414685/766198531626106941/{mid}"
 
 
@@ -94,18 +93,31 @@ def create_search_view(
     total: int,
     query_str: str,
     current_page: int = 0,
+    limit: int | None = None,
 ) -> discord.ui.LayoutView:
 
-    max_page     = max(0, (total - 1) // config.RESULTS_PER_PAGE)
-    skip         = current_page * config.RESULTS_PER_PAGE
-    results      = list(_col.find(query).sort(sort).skip(skip).limit(config.RESULTS_PER_PAGE))
+    # Effective total respects --limit
+    effective_total = min(total, limit) if limit is not None else total
+    max_page        = max(0, (effective_total - 1) // config.RESULTS_PER_PAGE)
+    skip            = current_page * config.RESULTS_PER_PAGE
+
+    cursor  = _col.find(query).sort(sort).skip(skip)
+    # Apply limit so we never fetch beyond the requested cap
+    if limit is not None:
+        remaining = max(0, limit - skip)
+        cursor = cursor.limit(min(config.RESULTS_PER_PAGE, remaining))
+    else:
+        cursor = cursor.limit(config.RESULTS_PER_PAGE)
+
+    results      = list(cursor)
     start        = skip + 1
     end          = skip + len(results)
     lines        = [_result_line(r) for r in results]
     results_text = "\n".join(lines) if lines else "_No results._"
     header_text  = f"**🔍 Auction Search** — _{query_str}_"
+    limit_note   = f"  •  capped at {limit:,}" if limit is not None else ""
     footer_text  = (
-        f"Showing {start}–{end} of {total:,}  •  "
+        f"Showing {start}–{end} of {effective_total:,}{limit_note}  •  "
         f"Page {current_page + 1}/{max_page + 1}"
     )
 
@@ -123,7 +135,7 @@ def create_search_view(
                     view=_error_view("❌ Not your search!"), ephemeral=True)
                 return
             await interaction.response.edit_message(
-                view=create_search_view(user_id, query, sort, total, query_str, current_page - 1))
+                view=create_search_view(user_id, query, sort, total, query_str, current_page - 1, limit))
 
     class NextBtn(discord.ui.Button):
         def __init__(self):
@@ -139,11 +151,11 @@ def create_search_view(
                     view=_error_view("❌ Not your search!"), ephemeral=True)
                 return
             await interaction.response.edit_message(
-                view=create_search_view(user_id, query, sort, total, query_str, current_page + 1))
+                view=create_search_view(user_id, query, sort, total, query_str, current_page + 1, limit))
 
-    # Shiny check uses "sh" key
-    accent    = config.SHINY_EMBED_COLOR if query.get("sh") else config.EMBED_COLOR
-    has_pages = total > config.RESULTS_PER_PAGE
+    # Shiny check: only True (not {"$ne": True}) means shiny search
+    accent    = config.SHINY_EMBED_COLOR if query.get("sh") is True else config.EMBED_COLOR
+    has_pages = effective_total > config.RESULTS_PER_PAGE
 
     inner: list = [
         discord.ui.TextDisplay(content=header_text),
@@ -193,11 +205,8 @@ def create_info_view(record: dict) -> discord.ui.LayoutView:
     img_url    = get_pokemon_image_url(name, shiny)
     accent     = config.SHINY_EMBED_COLOR if shiny else config.EMBED_COLOR
     bidder_s   = f"<@{bidder_id}>" if bidder_id else "Unknown"
-
-    # Seller display: mention if we have their ID, otherwise just show name
     seller_s   = f"`{seller}`" if not seller_id else f"<@{seller_id}> (`{seller}`)"
 
-    # ── Basic Info block ──────────────────────────────────────────────────────
     basic_text = (
         f"**📋 Basic Info**\n"
         f"{REPLY} **Name:** {shiny_s}{name}\n"
@@ -208,7 +217,6 @@ def create_info_view(record: dict) -> discord.ui.LayoutView:
         f"{REPLY} **Nature:** `{nature}`"
     )
 
-    # ── Auction Info block ────────────────────────────────────────────────────
     auction_text = (
         f"**💰 Auction Info**\n"
         f"{REPLY} **Winning Bid:** `{bid_s}`\n"
@@ -217,7 +225,6 @@ def create_info_view(record: dict) -> discord.ui.LayoutView:
         f"{REPLY} **Date:** `{date_s}`"
     )
 
-    # ── IVs block ─────────────────────────────────────────────────────────────
     iv_text = (
         f"**📊 IVs** — `{iv_tot_s}` total\n"
         + iv_line("HP",  record.get("hp"))   + "\n"
@@ -228,13 +235,11 @@ def create_info_view(record: dict) -> discord.ui.LayoutView:
         + iv_line("Spe", record.get("spe"))
     )
 
-    # ── Moves block ───────────────────────────────────────────────────────────
     moves_text = (
         "**⚔️ Moves**\n"
         + ("\n".join(f"{REPLY} {m}" for m in moves) if moves else "_None_")
     )
 
-    # ── Build component list ──────────────────────────────────────────────────
     comps: list = [
         discord.ui.TextDisplay(content=f"## {shiny_s}Auction #{auction_id}"),
         discord.ui.Separator(visible=True, spacing=discord.SeparatorSpacing.small),
@@ -304,17 +309,17 @@ def create_help_view(page: int = 0) -> discord.ui.LayoutView:
         f"{REPLY} `j!a s --category starters --iv >=85`\n"
         f"{REPLY} `j!a s --move fake out --level >50`\n"
         f"{REPLY} `j!a s --seller @user`\n"
+        f"{REPLY} `j!a s --name goomy --limit 10`\n"
         f"{REPLY} `j!a i 1544762`"
     )
 
     CHUNK_SIZE = 15
     flag_chunks = [flag_lines[i:i+CHUNK_SIZE] for i in range(0, len(flag_lines), CHUNK_SIZE)]
-    max_page = len(flag_chunks) - 1  # last page is categories+examples
+    max_page = len(flag_chunks) - 1
 
-    # Clamp page
-    page = max(0, min(page, max_page + 1))  # +1 for the categories/examples page
+    page = max(0, min(page, max_page + 1))
 
-    TOTAL_PAGES = max_page + 2  # filter pages + 1 final page
+    TOTAL_PAGES = max_page + 2
 
     class PrevBtn(discord.ui.Button):
         def __init__(self):
@@ -349,7 +354,6 @@ def create_help_view(page: int = 0) -> discord.ui.LayoutView:
         accent_colour=config.EMBED_COLOR,
     )
 
-    # ── Page: filters ─────────────────────────────────────────────────────────
     if page <= max_page:
         chunk = flag_chunks[page]
         page_label = f"Page {page + 1}/{TOTAL_PAGES}"
@@ -361,8 +365,6 @@ def create_help_view(page: int = 0) -> discord.ui.LayoutView:
             discord.ui.ActionRow(PrevBtn(), NextBtn()),
             accent_colour=config.EMBED_COLOR,
         )
-
-    # ── Page: categories + examples ───────────────────────────────────────────
     else:
         page_label = f"Page {page + 1}/{TOTAL_PAGES}"
         body = discord.ui.Container(
@@ -395,29 +397,28 @@ class Auction(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
-    # ── /auction  OR  j!auction / j!a ────────────────────────────────────────
     @commands.hybrid_group(name="auction", aliases=["a"], invoke_without_command=True)
     async def auction_group(self, ctx: commands.Context):
         """Pokémon auction commands"""
         await ctx.send(view=create_help_view())
 
-    # ── /auction search  OR  j!a s ────────────────────────────────────────────
     @auction_group.command(name="search", aliases=["s"])
     @app_commands.describe(filters="Filters e.g: --name pikachu --shiny --iv >90 --sort price")
     async def auction_search(self, ctx: commands.Context, *, filters: str = ""):
         """Search past auctions with filters"""
-        raw         = filters.split() if filters else []
-        query, sort = build_query(raw)
-        total       = _col.count_documents(query)
+        raw              = filters.split() if filters else []
+        query, sort, limit = build_query(raw)
+        total            = _col.count_documents(query)
 
         if total == 0:
             await ctx.send(view=_error_view("❌ No auctions found matching your filters."))
             return
 
         query_str = filters.strip() or "All auctions"
-        await ctx.send(view=create_search_view(ctx.author.id, query, sort, total, query_str, 0))
+        await ctx.send(
+            view=create_search_view(ctx.author.id, query, sort, total, query_str, 0, limit)
+        )
 
-    # ── /auction info  OR  j!a i ──────────────────────────────────────────────
     @auction_group.command(name="info", aliases=["i"])
     @app_commands.describe(auction_id="The auction ID number")
     async def auction_info(self, ctx: commands.Context, auction_id: str = ""):
@@ -454,7 +455,6 @@ class Auction(commands.Cog):
             mention_author=False,
         )
 
-    # ── /auction help  OR  j!a h ──────────────────────────────────────────────
     @auction_group.command(name="help", aliases=["h"])
     async def auction_help(self, ctx: commands.Context):
         """Show all available filters and examples"""
