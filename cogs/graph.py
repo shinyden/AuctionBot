@@ -59,10 +59,14 @@ MAX_POINTS = 800
 # ─────────────────────────────────────────────────────────────────────────────
 
 def _detect_variant(query: dict) -> str:
-    # Query uses short field names: sh = shiny, gx = gmax
-    if query.get("sh"):
+    """
+    Detect shiny/gmax variant from query.
+    Must check for exactly True — --noshiny sets sh={"$ne": True} which is
+    truthy but must NOT be treated as a shiny query.
+    """
+    if query.get("sh") is True:
         return "shiny"
-    if query.get("gx"):
+    if query.get("gx") is True:
         return "gmax"
     return "normal"
 
@@ -424,6 +428,7 @@ class Graph(commands.Cog):
           j!g --name pikachu --shiny
           j!g --name charizard --gmax
           j!g --name mewtwo --iv >90 --sort price
+          j!g --name goomy --limit 10
         """
         if "--name" not in filters and "--n" not in filters:
             await ctx.send(
@@ -437,9 +442,9 @@ class Graph(commands.Cog):
             )
             return
 
-        raw         = filters.split() if filters else []
-        query, _    = build_query(raw)
-        display_str = filters.strip()
+        raw              = filters.split() if filters else []
+        query, _, limit  = build_query(raw)
+        display_str      = filters.strip()
 
         # Only pull fields we actually need (short names)
         projection = {
@@ -458,12 +463,18 @@ class Graph(commands.Cog):
         else:
             await ctx.typing()
 
-        records = list(
-            _col.find(
-                {**query, "ts": {"$exists": True}, "bid": {"$exists": True}},
-                projection,
-            ).sort("ts", 1)
-        )
+        # Sort newest-first so --limit keeps the most recent N records
+        cursor = _col.find(
+            {**query, "ts": {"$exists": True}, "bid": {"$exists": True}},
+            projection,
+        ).sort("ts", -1)
+
+        if limit is not None:
+            cursor = cursor.limit(limit)
+
+        records = list(cursor)
+        # Re-sort oldest→newest for the graph's X axis
+        records.sort(key=lambda r: r.get("ts", 0))
 
         if not records:
             await ctx.send(
@@ -502,8 +513,9 @@ class Graph(commands.Cog):
         disc_tag  = _DISCORD_TAG[variant]
         accent    = config.SHINY_EMBED_COLOR if variant == "shiny" else config.EMBED_COLOR
 
-        heading   = f"## {disc_tag} {name} — Price History".strip()
-        sub       = f"_{total:,} auction(s) plotted  •  filters: `{display_str}`_"
+        heading    = f"## {disc_tag} {name} — Price History".strip()
+        limit_note = f"  •  last {limit:,} auctions" if limit is not None else ""
+        sub        = f"_{total:,} auction(s) plotted{limit_note}  •  filters: `{display_str}`_"
 
         file = discord.File(buf, filename="graph.png")
         ref  = ctx.message if not (hasattr(ctx, "interaction") and ctx.interaction) else None
