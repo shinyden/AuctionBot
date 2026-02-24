@@ -221,7 +221,7 @@ def parse_numeric_operator(val: str, field: str) -> dict | None:
         if "-" in val and not val.startswith("-"):
             lo, hi = val.split("-", 1)
             return {field: {"$gte": float(lo), "$lte": float(hi)}}
-        return {field: {"$eq": float(val)}}  # fallback: at-least
+        return {field: {"$eq": float(val)}}  # fallback: exact
     except ValueError:
         return None
 
@@ -230,7 +230,6 @@ def parse_numeric_operator(val: str, field: str) -> dict | None:
 # MULTI-IV COUNT QUERY BUILDER
 # ─────────────────────────────────────────────────────────────────────────────
 
-# The six individual IV short field names stored in the DB.
 _IV_FIELDS = ("hp", "atk", "def", "spa", "spd", "spe")
 
 
@@ -238,30 +237,8 @@ def build_iv_count_query(iv_value: str, min_count: int) -> dict | None:
     """
     Return a MongoDB $expr clause that asserts at least `min_count` of the
     six individual IV fields equal `iv_value`.
-
-    `iv_value` is the raw user token — a plain integer 0-31 only (no operators,
-    no ranges).  Returns None if the value is not a valid integer.
-
-    The generated query uses $expr / $sum / $cond so it works without any
-    special index:
-
-        {
-          "$expr": {
-            "$gte": [
-              {
-                "$sum": [
-                  {"$cond": [{"$eq": ["$hp",  <n>]}, 1, 0]},
-                  {"$cond": [{"$eq": ["$atk", <n>]}, 1, 0]},
-                  ...
-                ]
-              },
-              <min_count>
-            ]
-          }
-        }
     """
     raw = iv_value.strip().replace(",", "")
-    # Only plain integers make sense for "exactly equal" IV matching
     try:
         target = int(raw)
     except ValueError:
@@ -315,18 +292,19 @@ class TokenReader:
 # QUERY BUILDER
 # ─────────────────────────────────────────────────────────────────────────────
 
-def build_query(raw_args: list[str]) -> tuple[dict, list]:
+def build_query(raw_args: list[str]) -> tuple[dict, list, int | None]:
     """
-    Parse raw CLI tokens into a (mongo_query_dict, mongo_sort_list).
+    Parse raw CLI tokens into a (mongo_query_dict, mongo_sort_list, limit).
 
     All generated query keys use the short DB field names.
-    Returns (query, sort).
+    Returns (query, sort, limit) — limit is None if --limit was not specified.
     """
     from categories import resolve_category
 
     query: dict       = {}
-    sort: list        = [("ts", -1)]   # default: newest first (ts = unix_timestamp)
+    sort: list        = [("ts", -1)]   # default: newest first
     and_clauses: list = []
+    limit: int | None = None
 
     reader = TokenReader(raw_args)
 
@@ -353,14 +331,22 @@ def build_query(raw_args: list[str]) -> tuple[dict, list]:
         if not val:
             continue
 
+        # ── Limit ─────────────────────────────────────────────────────────────
+        if canonical == "--limit":
+            try:
+                limit = max(1, int(val.strip()))
+            except ValueError:
+                pass
+            continue
+
         # ── Sort ─────────────────────────────────────────────────────────────
         if canonical == "--sort":
             sv = val.lower().strip()
             sort_field_map = {
-                "iv":    "iv",    # total_iv_percent → iv
-                "price": "bid",   # winning_bid      → bid
-                "level": "lv",    # level            → lv
-                "date":  "ts",    # unix_timestamp   → ts
+                "iv":    "iv",
+                "price": "bid",
+                "level": "lv",
+                "date":  "ts",
             }
             if sv.endswith("+"):
                 direction, key = 1, sv[:-1]
@@ -381,7 +367,6 @@ def build_query(raw_args: list[str]) -> tuple[dict, list]:
                 new_set = set(cat["pokemon"])
                 existing_in = query.get("pn", {}).get("$in")
                 if existing_in is not None:
-                    # intersect: only keep pokémon common to both categories
                     query["pn"] = {"$in": list(set(existing_in) & new_set)}
                 else:
                     query["pn"] = {"$in": list(new_set)}
@@ -393,19 +378,17 @@ def build_query(raw_args: list[str]) -> tuple[dict, list]:
             if family:
                 existing_in = query.get("pn", {}).get("$in")
                 if existing_in is not None:
-                    # union: add all family members not already present
                     query["pn"] = {"$in": list(set(existing_in) | family)}
                 else:
                     query["pn"] = {"$in": list(family)}
             continue
 
-        # ── Name (multi-language) ─────────────────────────────────────────────
+        # ── Name (multi-language, strict canonical match) ─────────────────────
         if canonical == "--name":
             resolved = resolve_pokemon_name(val)
             matched = resolved if resolved else val
             existing_in = query.get("pn", {}).get("$in")
             if existing_in is not None:
-                # already has $in from a previous --name; append
                 existing_in.append(matched)
             else:
                 query["pn"] = {"$in": [matched]}
@@ -423,7 +406,7 @@ def build_query(raw_args: list[str]) -> tuple[dict, list]:
             })
             continue
 
-        # ── Gender ───────────────────────────────────────────────────────────────
+        # ── Gender ───────────────────────────────────────────────────────────
         if canonical == "--gender":
             gender_map = {
                 "male":    "Male",
@@ -445,13 +428,10 @@ def build_query(raw_args: list[str]) -> tuple[dict, list]:
         if canonical == "--bidder":
             clean = val.strip("<@!>")
             if clean.isdigit():
-                query["bdr"] = int(clean)   # bdr = bidder_id
+                query["bdr"] = int(clean)
             continue
 
         # ── Seller ───────────────────────────────────────────────────────────
-        # Supports:
-        #   --seller @mention or numeric ID  → match on sid (int)
-        #   --seller some name               → match on sn (seller_name, case-insensitive)
         if canonical == "--seller":
             clean = val.strip("<@!>")
             if clean.isdigit():
@@ -468,21 +448,21 @@ def build_query(raw_args: list[str]) -> tuple[dict, list]:
                 val = ">=" + val
             elif canonical == "--price" and not any(val.startswith(op) for op in (">", "<", "=")) and "-" not in val:
                 val = "=" + val
-            cond = parse_numeric_operator(val, "bid")   # bid = winning_bid
+            cond = parse_numeric_operator(val, "bid")
             if cond:
                 existing = query.get("bid", {})
                 existing.update(cond.get("bid", {}))
                 query["bid"] = existing
             continue
 
-        # ── Multi-IV count filters (triple / quad / penta / hex) ─────────────
+        # ── Multi-IV count filters ────────────────────────────────────────────
         if info.get("iv_count") is not None:
             clause = build_iv_count_query(val, info["iv_count"])
             if clause:
                 and_clauses.append(clause)
             continue
 
-        # ── Numeric IV / level fields (mongo_field from filters.py) ──────────
+        # ── Numeric IV / level fields ─────────────────────────────────────────
         mongo_field = info.get("mongo_field")
         if mongo_field:
             cond = parse_numeric_operator(val, mongo_field)
@@ -494,7 +474,7 @@ def build_query(raw_args: list[str]) -> tuple[dict, list]:
     if and_clauses:
         query.setdefault("$and", []).extend(and_clauses)
 
-    return query, sort
+    return query, sort, limit
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -502,7 +482,7 @@ def build_query(raw_args: list[str]) -> tuple[dict, list]:
 # ─────────────────────────────────────────────────────────────────────────────
 
 def format_date(record: dict) -> str:
-    ts = record.get("ts")   # ts = unix_timestamp
+    ts = record.get("ts")
     if not ts:
         return "Unknown"
     dt = datetime.fromtimestamp(ts, tz=timezone.utc)
@@ -523,14 +503,14 @@ def iv_line(label: str, value: int | None) -> str:
 
 
 def format_winning_bid(record: dict) -> str:
-    bid = record.get("bid")   # bid = winning_bid
+    bid = record.get("bid")
     return f"{bid:,} pc" if bid is not None else "??? pc"
 
 
 def format_winning_bid_long(record: dict) -> str:
-    bid = record.get("bid")   # bid = winning_bid
+    bid = record.get("bid")
     return f"{bid:,} Pokécoins" if bid is not None else "???"
 
 
 def shiny_prefix(record: dict) -> str:
-    return "✨ " if record.get("sh") else ""   # sh = shiny
+    return "✨ " if record.get("sh") else ""
