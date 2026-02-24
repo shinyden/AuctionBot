@@ -145,7 +145,7 @@ FLAG_DEFINITIONS: dict[str, dict] = {
 
     # ── Price ─────────────────────────────────────────────────────────────────
     "--price": {
-        "aliases":     ["--p"],
+        "aliases":     ["--p","--bid","--winningbid"],
         "takes_arg":   True,
         "multi":       False,
         "help":        "Price filter (e.g. 5000, >5000, <10000, 500-5000)",
