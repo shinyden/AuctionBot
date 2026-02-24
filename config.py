@@ -35,16 +35,16 @@ _DEFAULT_MALE    = "♂️"
 _DEFAULT_FEMALE  = "♀️"
 _DEFAULT_UNKNOWN = "❔"
 
-def get_gender_emoji(gender: str) -> str:
+def get_gender_emoji(gender: str | None) -> str:
     """Return configured emoji for gender, falling back to defaults."""
-    if not gender:
-        return EMOJI_UNKNOWN or _DEFAULT_UNKNOWN
+    if gender is None:
+        return ""  # pre-gender era record — show nothing
     g = gender.lower()
     if g == "male":
         return EMOJI_MALE or _DEFAULT_MALE
     if g == "female":
         return EMOJI_FEMALE or _DEFAULT_FEMALE
-    return EMOJI_UNKNOWN or _DEFAULT_UNKNOWN
+    return EMOJI_UNKNOWN or _DEFAULT_UNKNOWN  # "Unknown" / genderless
 
 # ─── Data Paths ───────────────────────────────────────────────────────────────
 import pathlib
