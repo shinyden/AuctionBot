@@ -41,7 +41,7 @@ FLAG_DEFINITIONS: dict[str, dict] = {
         "aliases":     ["--n", "-n", "--pokemon", "--poke"],
         "takes_arg":   True,
         "multi":       False,
-        "help":        "Pokémon name (partial, case-insensitive, any language)",
+        "help":        "Pokémon name (exact canonical match, any language)",
         "mongo_field": "pn",       # handled specially in build_query (name resolution)
     },
 
@@ -108,14 +108,12 @@ FLAG_DEFINITIONS: dict[str, dict] = {
     },
 
     # ── Multi-IV count filters ─────────────────────────────────────────────────
-    # These check that exactly N of the 6 IVs (hp/atk/def/spa/spd/spe) equal
-    # the given value.  e.g. --triple 31 → at least 3 IVs are 31
     "--triple": {
         "aliases":     ["--three", "--trip", "--tri"],
         "takes_arg":   True,
         "multi":       False,
         "help":        "At least 3 IVs equal this value (e.g. --triple 31, --triple 0)",
-        "mongo_field": None,       # handled specially in build_query
+        "mongo_field": None,
         "iv_count":    3,
     },
     "--quadruple": {
@@ -195,7 +193,7 @@ FLAG_DEFINITIONS: dict[str, dict] = {
     "--move": {
         "aliases":     ["-m", "--moves", "--m"],
         "takes_arg":   True,
-        "multi":       True,       # stackable: --move fake out --move crunch
+        "multi":       True,
         "help":        "Has this move (stackable, supports multi-word)",
         "mongo_field": "mv",
     },
@@ -268,6 +266,15 @@ FLAG_DEFINITIONS: dict[str, dict] = {
         "multi":       False,
         "help":        "Show only Pokémon in the same evo family as the given name",
         "mongo_field": None,
+    },
+
+    # ── Limit ─────────────────────────────────────────────────────────────────
+    "--limit": {
+        "aliases":     ["--lim", "--max", "--top"],
+        "takes_arg":   True,
+        "multi":       False,
+        "help":        "Limit results to the N most recent matching records (e.g. --limit 10)",
+        "mongo_field": None,   # handled specially in build_query / callers
     },
 }
 
