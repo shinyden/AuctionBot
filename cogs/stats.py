@@ -38,6 +38,7 @@ _db    = _mongo[config.MONGO_DB_NAME]
 _col   = _db[config.MONGO_COLLECTION]
 
 LB_SIZE = 10
+SAFE_MENTIONS = discord.AllowedMentions.none()
 
 
 # ═════════════════════════════════════════════════════════════════════════════
@@ -904,7 +905,7 @@ class Stats(commands.Cog):
 
         async with ctx.typing():
             view = _build_lb_view(lb_type, variant, caller_id=ctx.author.id)
-        await ctx.reply(view=view, mention_author=False)
+        await ctx.reply(view=view, mention_author=False, allowed_mentions=SAFE_MENTIONS)
 
     # ── j!market ──────────────────────────────────────────────────────────────
     @commands.hybrid_command(name="auction_insights", aliases=["market", "ai"])
