@@ -22,7 +22,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 from config import (
-    POKEMON_NAMES_FILE, EVOLUTION_CSV_FILE, CDN_MAPPING_CSV_FILE,
+    POKEMON_NAMES_FILE, EVENT_NAMES_FILE, EVOLUTION_CSV_FILE, CDN_MAPPING_CSV_FILE,
     CDN_BASE_URL, CDN_SHINY_URL, IV_BAR_FILLED, IV_BAR_EMPTY, IV_BAR_LENGTH,
     get_gender_emoji,
 )
@@ -34,7 +34,8 @@ from filters import resolve_flag, get_flag_info, is_flag
 # ─────────────────────────────────────────────────────────────────────────────
 
 def normalize(s: str) -> str:
-    """Lowercase + strip accents (é→e, etc.)."""
+    """Lowercase + strip accents (é→e, etc.). NFC first to handle precomposed chars."""
+    s = unicodedata.normalize('NFC', s)
     return ''.join(
         c for c in unicodedata.normalize('NFD', s.lower())
         if unicodedata.category(c) != 'Mn'
@@ -48,9 +49,15 @@ def normalize(s: str) -> str:
 class PokemonNameDB:
     """Maps every name/alias (all languages, normalized) → canonical English name."""
 
-    def __init__(self, json_path: Path):
+    def __init__(self, json_path: Path, extra_paths: list[Path] | None = None):
         self._map: dict[str, str] = {}
         self._load(json_path)
+        for p in (extra_paths or []):
+            if p.exists():
+                with open(p, encoding="utf-8") as f:
+                    self._load_entries(json.load(f))
+            else:
+                print(f"[WARN] Extra names file not found at {p}")
 
     def _load(self, path: Path):
         if not path.exists():
@@ -58,7 +65,10 @@ class PokemonNameDB:
             return
         with open(path, encoding="utf-8") as f:
             data = json.load(f)
+        self._load_entries(data)
 
+    def _load_entries(self, data: list):
+        """Load a list of name entries into the map."""
         for entry in data:
             canonical = entry.get("name", "")
             if not canonical:
@@ -83,7 +93,7 @@ _name_db: PokemonNameDB | None = None
 def get_name_db() -> PokemonNameDB:
     global _name_db
     if _name_db is None:
-        _name_db = PokemonNameDB(POKEMON_NAMES_FILE)
+        _name_db = PokemonNameDB(POKEMON_NAMES_FILE, extra_paths=[EVENT_NAMES_FILE])
     return _name_db
 
 
@@ -309,7 +319,7 @@ def build_query(raw_args: list[str]) -> tuple[dict, list, int | None]:
     reader = TokenReader(raw_args)
 
     while reader.peek() is not None:
-        token    = reader.next()
+        token     = reader.next()
         canonical = resolve_flag(token)
 
         if canonical is None:
@@ -339,7 +349,7 @@ def build_query(raw_args: list[str]) -> tuple[dict, list, int | None]:
                 pass
             continue
 
-        # ── Sort ─────────────────────────────────────────────────────────────
+        # ── Sort ──────────────────────────────────────────────────────────────
         if canonical == "--sort":
             sv = val.lower().strip()
             sort_field_map = {
@@ -360,7 +370,7 @@ def build_query(raw_args: list[str]) -> tuple[dict, list, int | None]:
                 sort = [(field, direction)]
             continue
 
-        # ── Category ─────────────────────────────────────────────────────────
+        # ── Category ──────────────────────────────────────────────────────────
         if canonical == "--category":
             cat = resolve_category(val)
             if cat:
@@ -372,7 +382,7 @@ def build_query(raw_args: list[str]) -> tuple[dict, list, int | None]:
                     query["pn"] = {"$in": list(new_set)}
             continue
 
-        # ── Evo family ───────────────────────────────────────────────────────
+        # ── Evo family ────────────────────────────────────────────────────────
         if canonical == "--evo":
             family = get_evo_family(val)
             if family:
@@ -383,30 +393,47 @@ def build_query(raw_args: list[str]) -> tuple[dict, list, int | None]:
                     query["pn"] = {"$in": list(family)}
             continue
 
-        # ── Name (multi-language, strict canonical match) ─────────────────────
+        # ── Name (multi-language, canonical match with accent-stripped fallback)
         if canonical == "--name":
             resolved = resolve_pokemon_name(val)
-            matched = resolved if resolved else val
-            existing_in = query.get("pn", {}).get("$in")
-            if existing_in is not None:
-                existing_in.append(matched)
+            if resolved:
+                # Exact match found in name DB (covers accented + unaccented aliases)
+                existing_in = query.get("pn", {}).get("$in")
+                if existing_in is not None:
+                    existing_in.append(resolved)
+                else:
+                    query["pn"] = {"$in": [resolved]}
             else:
-                query["pn"] = {"$in": [matched]}
+                # No match in DB — fall back to in-memory normalized search
+                # so "flower fairy flabebe" still finds "Flower Fairy Flabébé"
+                norm_words = normalize(val).split()
+                name_db    = get_name_db()
+                matches    = list({
+                    canonical_name
+                    for norm_key, canonical_name in name_db._map.items()
+                    if all(w in norm_key for w in norm_words)
+                })
+                if matches:
+                    existing_in = query.get("pn", {}).get("$in")
+                    if existing_in is not None:
+                        existing_in.extend(matches)
+                    else:
+                        query["pn"] = {"$in": matches}
             continue
 
-        # ── Nature ───────────────────────────────────────────────────────────
+        # ── Nature ────────────────────────────────────────────────────────────
         if canonical == "--nature":
             query["nat"] = {"$regex": f"^{re.escape(val)}$", "$options": "i"}
             continue
 
-        # ── Move (stackable) ─────────────────────────────────────────────────
+        # ── Move (stackable) ──────────────────────────────────────────────────
         if canonical == "--move":
             and_clauses.append({
                 "mv": {"$elemMatch": {"$regex": f"^{re.escape(val)}$", "$options": "i"}}
             })
             continue
 
-        # ── Gender ───────────────────────────────────────────────────────────
+        # ── Gender ────────────────────────────────────────────────────────────
         if canonical == "--gender":
             gender_map = {
                 "male":    "Male",
@@ -424,14 +451,14 @@ def build_query(raw_args: list[str]) -> tuple[dict, list, int | None]:
                 query["gen"] = {"$regex": re.escape(val), "$options": "i"}
             continue
 
-        # ── Bidder ───────────────────────────────────────────────────────────
+        # ── Bidder ────────────────────────────────────────────────────────────
         if canonical == "--bidder":
             clean = val.strip("<@!>")
             if clean.isdigit():
                 query["bdr"] = int(clean)
             continue
 
-        # ── Seller ───────────────────────────────────────────────────────────
+        # ── Seller ────────────────────────────────────────────────────────────
         if canonical == "--seller":
             clean = val.strip("<@!>")
             if clean.isdigit():
@@ -440,7 +467,7 @@ def build_query(raw_args: list[str]) -> tuple[dict, list, int | None]:
                 query["sn"] = {"$regex": re.escape(val), "$options": "i"}
             continue
 
-        # ── Price ────────────────────────────────────────────────────────────
+        # ── Price ─────────────────────────────────────────────────────────────
         if canonical in ("--price", "--maxprice", "--minprice"):
             if canonical == "--maxprice" and not any(val.startswith(op) for op in (">", "<", "=")):
                 val = "<=" + val
@@ -455,14 +482,14 @@ def build_query(raw_args: list[str]) -> tuple[dict, list, int | None]:
                 query["bid"] = existing
             continue
 
-        # ── Multi-IV count filters ────────────────────────────────────────────
+        # ── Multi-IV count filters ─────────────────────────────────────────────
         if info.get("iv_count") is not None:
             clause = build_iv_count_query(val, info["iv_count"])
             if clause:
                 and_clauses.append(clause)
             continue
 
-        # ── Numeric IV / level fields ─────────────────────────────────────────
+        # ── Numeric IV / level fields ──────────────────────────────────────────
         mongo_field = info.get("mongo_field")
         if mongo_field:
             cond = parse_numeric_operator(val, mongo_field)
