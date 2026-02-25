@@ -39,6 +39,8 @@ _col   = _db[config.MONGO_COLLECTION]
 # ─── Message URL template ──────────────────────────────────────────────────────
 _MSG_URL_TEMPLATE = "https://discord.com/channels/716390832034414685/766198531626106941/{mid}"
 
+SAFE_MENTIONS = discord.AllowedMentions.none()
+
 
 def _build_message_url(record: dict) -> str | None:
     mid = record.get("mid")
@@ -416,7 +418,8 @@ class Auction(commands.Cog):
 
         query_str = filters.strip() or "All auctions"
         await ctx.send(
-            view=create_search_view(ctx.author.id, query, sort, total, query_str, 0, limit)
+            view=create_search_view(ctx.author.id, query, sort, total, query_str, 0, limit),
+            allowed_mentions=SAFE_MENTIONS
         )
 
     @auction_group.command(name="info", aliases=["i"])
@@ -453,6 +456,7 @@ class Auction(commands.Cog):
             view=create_info_view(record),
             reference=ctx.message,
             mention_author=False,
+            allowed_mentions=SAFE_MENTIONS,
         )
 
     @auction_group.command(name="help", aliases=["h"])
