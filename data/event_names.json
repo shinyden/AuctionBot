@@ -1,0 +1,2869 @@
+[
+  {
+    "dex_number": "1",
+    "name": "Autumn Bulbasaur",
+    "other_names": {},
+    "is_variant": true
+  },
+  {
+    "dex_number": "13",
+    "name": "Bug Catcher Weedle",
+    "other_names": {
+      "en": [
+        "Spring Weedle"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "16",
+    "name": "Papel Picado Pidgey",
+    "other_names": {
+      "en": [
+        "Día de Muertos Pidgey"
+      ],
+      "unaccented": [
+        "Dia de Muertos Pidgey"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "25",
+    "name": "Alola Cap Pikachu",
+    "other_names": {
+      "en": [
+        "アローラキャップ",
+        "Arōrakyappu",
+        "Alola-Kappe",
+        "Casquette d'Alola"
+      ],
+      "unaccented": [
+        "アローラキャッフ",
+        "Arorakyappu"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "25",
+    "name": "Hoenn Cap Pikachu",
+    "other_names": {
+      "en": [
+        "ホウエンキャップ",
+        "Hōenkyappu",
+        "Hoenn-Kappe",
+        "Casquette de Hoenn"
+      ],
+      "unaccented": [
+        "ホウエンキャッフ",
+        "Hoenkyappu"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "25",
+    "name": "Kalos Cap Pikachu",
+    "other_names": {
+      "en": [
+        "カロスキャップ",
+        "Karosukyappu",
+        "Kalos-Kappe",
+        "Casquette de Kalos"
+      ],
+      "unaccented": [
+        "カロスキャッフ"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "25",
+    "name": "Original Cap Pikachu",
+    "other_names": {
+      "en": [
+        "オリジナルキャップ",
+        "Orijinarukyappu",
+        "Original-Kappe",
+        "Casquette Originale"
+      ],
+      "unaccented": [
+        "オリシナルキャッフ"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "25",
+    "name": "Partner Cap Pikachu",
+    "other_names": {
+      "en": [
+        "キミにきめたキャップ",
+        "Kiminikimetakyappu",
+        "Partner-Kappe",
+        "Casquette Partenaire"
+      ],
+      "unaccented": [
+        "キミにきめたキャッフ"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "25",
+    "name": "Pikachu Belle",
+    "other_names": {
+      "en": [
+        "Pikachu Lady"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "25",
+    "name": "Pikachu Libre",
+    "other_names": {
+      "en": [
+        "Pikachu Catcheur"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "25",
+    "name": "Pikachu Ph.D.",
+    "other_names": {
+      "en": [
+        "Pikachu Docteur"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "25",
+    "name": "Pikachu Pop Star",
+    "other_names": {
+      "en": [
+        "Pikachu Star"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "25",
+    "name": "Pikachu Rock Star",
+    "other_names": {
+      "en": [
+        "Pikachu Rockeur"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "25",
+    "name": "Sinnoh Cap Pikachu",
+    "other_names": {
+      "en": [
+        "シンオウキャップ",
+        "Shin'Ōkyappu",
+        "Sinnoh-Kappe",
+        "Casquette de Sinnoh"
+      ],
+      "unaccented": [
+        "シンオウキャッフ",
+        "Shin'Okyappu"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "25",
+    "name": "Snowman Pikachu",
+    "other_names": {
+      "en": [
+        "Winter Pikachu"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "25",
+    "name": "Surf Pikachu",
+    "other_names": {
+      "en": [
+        "Summer Pikachu"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "25",
+    "name": "United Pikachu",
+    "other_names": {
+      "en": [
+        "Fundraiser Pikachu"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "25",
+    "name": "Unova Cap Pikachu",
+    "other_names": {
+      "en": [
+        "イッシュキャップ",
+        "Isshukyappu",
+        "Einall-Kappe",
+        "Casquette d'Unys"
+      ],
+      "unaccented": [
+        "イッシュキャッフ"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "26",
+    "name": "Vampire Raichu",
+    "other_names": {
+      "en": [
+        "Halloween Raichu"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "27",
+    "name": "Sandshrew of the Sarcophagus",
+    "other_names": {
+      "en": [
+        "Halloween Sandshrew"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "29",
+    "name": "Valentine's Nidoran",
+    "other_names": {},
+    "is_variant": true
+  },
+  {
+    "dex_number": "37",
+    "name": "Birthday Cake Alopix",
+    "other_names": {
+      "en": [
+        "Birthday Cake Alolan Vulpix"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "37",
+    "name": "Rudolph Vulpix",
+    "other_names": {
+      "en": [
+        "Festive Vulpix"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "38",
+    "name": "Halloween Alolan Ninetales",
+    "other_names": {},
+    "is_variant": true
+  },
+  {
+    "dex_number": "39",
+    "name": "Devil Jigglypuff",
+    "other_names": {
+      "en": [
+        "Halloween Jigglypuff"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "43",
+    "name": "Sprouting Oddish",
+    "other_names": {
+      "en": [
+        "Spring Oddish"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "46",
+    "name": "Flower Paras",
+    "other_names": {
+      "en": [
+        "Spring Paras"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "50",
+    "name": "Angel Diglett",
+    "other_names": {
+      "en": [
+        "Festive Diglett"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "52",
+    "name": "Egg Painter Meowth",
+    "other_names": {
+      "en": [
+        "Easter Meowth"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "54",
+    "name": "Frankenstein Psyduck",
+    "other_names": {
+      "en": [
+        "Halloween Psyduck"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "77",
+    "name": "Elsa Galarian Ponyta",
+    "other_names": {
+      "en": [
+        "Winter Galarian Ponyta"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "78",
+    "name": "Autumn Rapidash",
+    "other_names": {},
+    "is_variant": true
+  },
+  {
+    "dex_number": "79",
+    "name": "Snowy Slowpoke",
+    "other_names": {
+      "en": [
+        "Winter Slowpoke"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "82",
+    "name": "Eggneton",
+    "other_names": {
+      "en": [
+        "Spring Magneton"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "83",
+    "name": "Festive Farfetch'd",
+    "other_names": {
+      "en": [
+        "クリスマスカモネギ",
+        "Kurisumasukamonegi",
+        "Christmas Kamonegi",
+        "Weihnachten Porenta",
+        "Canarticho Festif"
+      ],
+      "unaccented": [
+        "クリスマスカモネキ"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "83",
+    "name": "Umbrella Farfetch'd",
+    "other_names": {
+      "en": [
+        "Autumn Farfetch'd"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "88",
+    "name": "Cube Slime Grimer",
+    "other_names": {
+      "en": [
+        "Anniversary Grimer"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "92",
+    "name": "Snowball Gastly",
+    "other_names": {
+      "en": [
+        "Christmas Gastly"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "103",
+    "name": "Celebrating Alolan Exeggutor ft. Komala",
+    "other_names": {
+      "en": [
+        "Pride Alolan Exeggutor"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "104",
+    "name": "Festive Cubone",
+    "other_names": {
+      "en": [
+        "クリスマスカラカラ",
+        "Kurisumasukarakara",
+        "Christmas Karakara",
+        "Weihnachten Tragosso",
+        "Osselait Festif"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "105",
+    "name": "Candy Cane Marowak",
+    "other_names": {
+      "en": [
+        "Festive Marowak"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "114",
+    "name": "Pasta Bolognese Tangela",
+    "other_names": {
+      "en": [
+        "Anniversary Tangela"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "115",
+    "name": "Egg Hunter Kangaskhan",
+    "other_names": {
+      "en": [
+        "Spring Kangaskhan"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "124",
+    "name": "Mrs. Claus Jynx",
+    "other_names": {
+      "en": [
+        "Festive Jynx"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "131",
+    "name": "Anniversary Lapras",
+    "other_names": {},
+    "is_variant": true
+  },
+  {
+    "dex_number": "131",
+    "name": "Egg Nest Lapras",
+    "other_names": {
+      "en": [
+        "Easter Lapras"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "132",
+    "name": "Cracked Ditto",
+    "other_names": {
+      "en": [
+        "Easter Ditto"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "133",
+    "name": "Autumn Eevee",
+    "other_names": {},
+    "is_variant": true
+  },
+  {
+    "dex_number": "143",
+    "name": "Grilling Snorlax",
+    "other_names": {
+      "en": [
+        "Summer Snorlax"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "143",
+    "name": "Santa Snorlax",
+    "other_names": {
+      "en": [
+        "Christmas Snorlax"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "147",
+    "name": "Martini Dratini",
+    "other_names": {
+      "en": [
+        "Summer Dratini"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "149",
+    "name": "Conductor Dragonite",
+    "other_names": {
+      "en": [
+        "Christmas Dragonite"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "149",
+    "name": "Guardian Dragonite",
+    "other_names": {
+      "en": [
+        "Anniversary Dragonite"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "152",
+    "name": "Autumn Chikorita",
+    "other_names": {},
+    "is_variant": true
+  },
+  {
+    "dex_number": "154",
+    "name": "Shamrock Meganium",
+    "other_names": {
+      "en": [
+        "St. Patrick's Day Meganium"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "155",
+    "name": "Spikey Cyndaquil",
+    "other_names": {
+      "en": [
+        "Winter Cyndaquil"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "158",
+    "name": "Sharkfin Totodile",
+    "other_names": {
+      "en": [
+        "Summer Totodile"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "161",
+    "name": "Archery Sentret",
+    "other_names": {
+      "en": [
+        "Summer Sentret"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "166",
+    "name": "Harvesting Ledian",
+    "other_names": {
+      "en": [
+        "Thanksgiving Ledian"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "172",
+    "name": "Ukulele Pichu",
+    "other_names": {
+      "en": [
+        "Summer Pichu"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "174",
+    "name": "Festive Igglybuff",
+    "other_names": {
+      "en": [
+        "クリスマスププリン",
+        "Kurisumasupupurin",
+        "Christmas Pupurin",
+        "Weihnachten Fluffeluff",
+        "Toudoudou Festif"
+      ],
+      "unaccented": [
+        "クリスマスフフリン"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "175",
+    "name": "Pumpkin Togepi",
+    "other_names": {
+      "en": [
+        "Halloween Togepi"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "179",
+    "name": "Christmas Mareep",
+    "other_names": {
+      "en": [
+        "Festive Mareep"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "181",
+    "name": "Pride Ampharos",
+    "other_names": {},
+    "is_variant": true
+  },
+  {
+    "dex_number": "182",
+    "name": "Music Box Bellossom",
+    "other_names": {
+      "en": [
+        "Christmas Bellossom"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "182",
+    "name": "Pride Bellossom",
+    "other_names": {
+      "en": [
+        "Bisexual Pride Bellossom"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "185",
+    "name": "Festive Sudowoodo",
+    "other_names": {
+      "en": [
+        "クリスマスウソッキー",
+        "Kurisumasūsokkī",
+        "Christmas Usokkie",
+        "Weihnachten Mogelbaum",
+        "Simularbre Festif"
+      ],
+      "unaccented": [
+        "Kurisumasusokki"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "192",
+    "name": "Anniversary Sunflora",
+    "other_names": {},
+    "is_variant": true
+  },
+  {
+    "dex_number": "194",
+    "name": "Devil Wooper",
+    "other_names": {
+      "en": [
+        "Halloween Wooper"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "194",
+    "name": "Skater Wooper",
+    "other_names": {
+      "en": [
+        "Anniversary Wooper"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "195",
+    "name": "Camp Leader Quagsire",
+    "other_names": {
+      "en": [
+        "Summer Quagsire",
+        "Maraiste"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "198",
+    "name": "Festive Murkrow",
+    "other_names": {
+      "en": [
+        "クリスマスヤミカラス",
+        "Kurisumasuyamikarasu",
+        "Christmas Yamikarasu",
+        "Weihnachten Kramurx",
+        "Cornèbre Festif"
+      ],
+      "unaccented": [
+        "Cornebre Festif"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "201",
+    "name": "Pride Unown",
+    "other_names": {
+      "en": [
+        "Non-binary Pride Unown"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "216",
+    "name": "Sweater Teddiursa",
+    "other_names": {
+      "en": [
+        "Sweater Weather Teddiursa"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "225",
+    "name": "Santa Delibird",
+    "other_names": {
+      "en": [
+        "Festive Delibird"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "235",
+    "name": "Fishing Smeargle ft. Magikarp",
+    "other_names": {
+      "en": [
+        "Summer Smeargle",
+        "Queulorior"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "241",
+    "name": "Festive Miltank",
+    "other_names": {
+      "en": [
+        "クリスマスミルタンク",
+        "Kurisumasumirutanku",
+        "Christmas Miltank",
+        "Weihnachten Miltank",
+        "Écrémeuh Festif"
+      ],
+      "unaccented": [
+        "Ecremeuh Festif"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "255",
+    "name": "Festive Torchic",
+    "other_names": {
+      "en": [
+        "クリスマスアチャモ",
+        "Kurisumasuachamo",
+        "Christmas Achamo",
+        "Weihnachten Flemmli",
+        "Poussifeu Festif"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "256",
+    "name": "Chicombusken",
+    "other_names": {
+      "en": [
+        "Halloween Combusken"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "258",
+    "name": "Moon Fairy Mudkip",
+    "other_names": {
+      "en": [
+        "Autumn Mudkip"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "262",
+    "name": "Evil Mightyena",
+    "other_names": {
+      "en": [
+        "Halloween Mightyena"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "263",
+    "name": "Pride Zigzagoon",
+    "other_names": {},
+    "is_variant": true
+  },
+  {
+    "dex_number": "267",
+    "name": "Hatching Beautifly",
+    "other_names": {
+      "en": [
+        "Spring Beautifly"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "270",
+    "name": "Sombrero Lotad",
+    "other_names": {
+      "en": [
+        "Día de Muertos Lotad"
+      ],
+      "unaccented": [
+        "Dia de Muertos Lotad"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "274",
+    "name": "Bird Nest Nuzleaf",
+    "other_names": {
+      "en": [
+        "Spring Nuzleaf"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "281",
+    "name": "Ice Princess Kirlia",
+    "other_names": {
+      "en": [
+        "Christmas Kirlia"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "282",
+    "name": "Festive Gardevoir",
+    "other_names": {
+      "en": [
+        "クリスマスサーナイト",
+        "Kurisumasusānaito",
+        "Christmas Sirnight",
+        "Weihnachten Guardevoir",
+        "Gardevoir Festif"
+      ],
+      "unaccented": [
+        "Kurisumasusanaito"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "282",
+    "name": "Pride Gardevoir & Delphox",
+    "other_names": {
+      "en": [
+        "Transgender Pride Gardevoir & Delphox"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "284",
+    "name": "Pride Masquerain",
+    "other_names": {
+      "en": [
+        "Lesbian Pride Masquerain"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "286",
+    "name": "Sage of Foliage",
+    "other_names": {
+      "en": [
+        "Halloween Breloom"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "298",
+    "name": "Easter Egg Azurill",
+    "other_names": {
+      "en": [
+        "Easter Azurill"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "303",
+    "name": "Overgrown Mawile",
+    "other_names": {
+      "en": [
+        "Spring Mawile"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "311",
+    "name": "Pyjama Plusle & Minun",
+    "other_names": {
+      "en": [
+        "Christmas Plusle"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "316",
+    "name": "Temaki Gulpin",
+    "other_names": {
+      "en": [
+        "Anniversary Gulpin"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "317",
+    "name": "Pile of Leaves Swalot",
+    "other_names": {
+      "en": [
+        "Autumn Swalot",
+        "Avaltout"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "325",
+    "name": "Ornaments Spoink",
+    "other_names": {
+      "en": [
+        "Festive Spoink"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "327",
+    "name": "Voodoo Spinda",
+    "other_names": {
+      "en": [
+        "Halloween Spinda"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "338",
+    "name": "Soluna",
+    "other_names": {
+      "en": [
+        "Halloween Solrock"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "343",
+    "name": "Leafy Baltoy",
+    "other_names": {
+      "en": [
+        "Sweater Weather Baltoy"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "350",
+    "name": "Pride Milotic",
+    "other_names": {
+      "en": [
+        "Pansexual Pride Milotic"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "354",
+    "name": "Banshee Banette",
+    "other_names": {
+      "en": [
+        "Anniversary Banette"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "355",
+    "name": "Sugar Duskull",
+    "other_names": {
+      "en": [
+        "Día de Muertos Duskull"
+      ],
+      "unaccented": [
+        "Dia de Muertos Duskull"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "361",
+    "name": "Christmas Tree Snorunt",
+    "other_names": {
+      "en": [
+        "Christmas Snorunt"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "361",
+    "name": "Tent Snorunt",
+    "other_names": {
+      "en": [
+        "Summer Snorunt",
+        "Stalgamin"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "363",
+    "name": "Ice Cream Spheals",
+    "other_names": {
+      "en": [
+        "Anniversary Spheal"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "366",
+    "name": "Clamacaron",
+    "other_names": {
+      "en": [
+        "Anniversary Clamperl"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "387",
+    "name": "Autumn Turtwig",
+    "other_names": {},
+    "is_variant": true
+  },
+  {
+    "dex_number": "387",
+    "name": "Treasure Turtwig",
+    "other_names": {
+      "en": [
+        "St. Patrick's Day Turtwig"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "388",
+    "name": "Autumn Grotle",
+    "other_names": {},
+    "is_variant": true
+  },
+  {
+    "dex_number": "389",
+    "name": "Autumn Torterra",
+    "other_names": {},
+    "is_variant": true
+  },
+  {
+    "dex_number": "393",
+    "name": "Floatie Piplup",
+    "other_names": {
+      "en": [
+        "Summer Piplup"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "393",
+    "name": "Pride Piplup",
+    "other_names": {
+      "en": [
+        "Pansexual Pride Piplup"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "399",
+    "name": "Easter Bidoof",
+    "other_names": {},
+    "is_variant": true
+  },
+  {
+    "dex_number": "402",
+    "name": "Wizard Kricketune",
+    "other_names": {
+      "en": [
+        "Anniversary Kricketune"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "407",
+    "name": "Pride Roserade",
+    "other_names": {
+      "en": [
+        "Gay Pride Roserade"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "413",
+    "name": "Snowmadam",
+    "other_names": {
+      "en": [
+        "Snowy Wormadam"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "417",
+    "name": "Lights Pachirisu",
+    "other_names": {
+      "en": [
+        "Christmas Pachirisu"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "419",
+    "name": "Ranger Floatzel",
+    "other_names": {
+      "en": [
+        "Anniversary Floatzel"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "421",
+    "name": "Blossom Cherrim",
+    "other_names": {
+      "en": [
+        "Spring Cherrim"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "426",
+    "name": "Drifboy",
+    "other_names": {
+      "en": [
+        "Halloween Drifblim"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "427",
+    "name": "Egg Basket Buneary",
+    "other_names": {
+      "en": [
+        "Spring Buneary"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "428",
+    "name": "Doll Lopunny",
+    "other_names": {
+      "en": [
+        "Christmas Lopunny"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "436",
+    "name": "Snowflake Bronzor",
+    "other_names": {
+      "en": [
+        "Winter Bronzor"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "454",
+    "name": "Rogue Toxicroak",
+    "other_names": {
+      "en": [
+        "Anniversary Toxicroak"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "455",
+    "name": "Overgrown Carnivine",
+    "other_names": {
+      "en": [
+        "Spring Carnivine"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "461",
+    "name": "Sage of Shadows",
+    "other_names": {
+      "en": [
+        "Halloween Weavile"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "470",
+    "name": "Autumn Leafeon",
+    "other_names": {},
+    "is_variant": true
+  },
+  {
+    "dex_number": "471",
+    "name": "Snowglobe Glaceon",
+    "other_names": {
+      "en": [
+        "Christmas Glaceon"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "474",
+    "name": "Porygon-X",
+    "other_names": {
+      "en": [
+        "April Fool's Day Porygon-Z"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "475",
+    "name": "Festive Gallade",
+    "other_names": {
+      "en": [
+        "クリスマスエルレイド",
+        "Kurisumasuerureido",
+        "Christmas Erureido",
+        "Weihnachten Galagladi",
+        "Gallame Festif"
+      ],
+      "unaccented": [
+        "クリスマスエルレイト"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "495",
+    "name": "Autumn Snivy",
+    "other_names": {},
+    "is_variant": true
+  },
+  {
+    "dex_number": "497",
+    "name": "Wooden Serperior",
+    "other_names": {
+      "en": [
+        "Lunar Serperior"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "509",
+    "name": "Bard Purrloin",
+    "other_names": {
+      "en": [
+        "Anniversary Purrloin"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "511",
+    "name": "Autumn Pansage",
+    "other_names": {},
+    "is_variant": true
+  },
+  {
+    "dex_number": "519",
+    "name": "Festive Pidove",
+    "other_names": {
+      "en": [
+        "クリスマスマメパト",
+        "Kurisumasumamepato",
+        "Christmas Mamepato",
+        "Weihnachten Dusselgurr",
+        "Poichigeon Festif"
+      ],
+      "unaccented": [
+        "クリスマスマメハト"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "521",
+    "name": "Lovebird Unfezant",
+    "other_names": {},
+    "is_variant": true
+  },
+  {
+    "dex_number": "524",
+    "name": "Sage of Snaring",
+    "other_names": {
+      "en": [
+        "Halloween Roggenrola"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "528",
+    "name": "Cloubat",
+    "other_names": {
+      "en": [
+        "Cloudy Swoobat"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "531",
+    "name": "Elf Audino",
+    "other_names": {
+      "en": [
+        "Christmas Audino"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "532",
+    "name": "Timber Timburr",
+    "other_names": {
+      "en": [
+        "Summer Timburr",
+        "Charpenti"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "542",
+    "name": "Leavanette",
+    "other_names": {
+      "en": [
+        "Halloween Leavanny"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "546",
+    "name": "Cherry Blossom Cottonee",
+    "other_names": {
+      "en": [
+        "Spring Cottonee"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "549",
+    "name": "La Catrina Hisuian Lilligant",
+    "other_names": {
+      "en": [
+        "Día de Muertos Hisuian Lilligant"
+      ],
+      "unaccented": [
+        "Dia de Muertos Hisuian Lilligant"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "549",
+    "name": "Poinsettia Lilligant",
+    "other_names": {
+      "en": [
+        "Festive Lilligant"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "562",
+    "name": "Honoring Yamask",
+    "other_names": {
+      "en": [
+        "Día de Muertos Yamask"
+      ],
+      "unaccented": [
+        "Dia de Muertos Yamask"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "570",
+    "name": "Santa H. Zorua",
+    "other_names": {
+      "en": [
+        "Santa Hisuian Zorua"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "571",
+    "name": "Foroark",
+    "other_names": {
+      "en": [
+        "Halloween Zoroark"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "572",
+    "name": "Pyjama Minccino",
+    "other_names": {
+      "en": [
+        "Christmas Minccino"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "575",
+    "name": "Pumpkin Gothorita",
+    "other_names": {
+      "en": [
+        "Halloween Gothorita"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "576",
+    "name": "Monarch Gothitelle",
+    "other_names": {
+      "en": [
+        "Día de Muertos Gothitelle"
+      ],
+      "unaccented": [
+        "Dia de Muertos Gothitelle"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "580",
+    "name": "Baby Ducklett",
+    "other_names": {
+      "en": [
+        "Valentine's Ducklett"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "580",
+    "name": "Waterpolo Ducklett",
+    "other_names": {
+      "en": [
+        "Summer Ducklett"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "581",
+    "name": "Festive Swanna",
+    "other_names": {
+      "en": [
+        "クリスマススワンナ",
+        "Kurisumasusuwanna",
+        "Christmas Swanna",
+        "Weihnachten Swaroness",
+        "Lakmécygne Festif"
+      ],
+      "unaccented": [
+        "Lakmecygne Festif"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "581",
+    "name": "Flower Family Swanna",
+    "other_names": {
+      "en": [
+        "Easter Swanna"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "585",
+    "name": "Reindeer Deerling",
+    "other_names": {
+      "en": [
+        "Reindeerling"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "586",
+    "name": "Winter Event Sawsbuck",
+    "other_names": {},
+    "is_variant": true
+  },
+  {
+    "dex_number": "590",
+    "name": "Foombrella",
+    "other_names": {
+      "en": [
+        "Umbrella Foongus"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "608",
+    "name": "Paper Lantern Lampent",
+    "other_names": {
+      "en": [
+        "Lunar Lampent"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "609",
+    "name": "Jack-O-Lantern Chandelure",
+    "other_names": {
+      "en": [
+        "Halloween Chandelure"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "613",
+    "name": "Spring Fever Cubchoo",
+    "other_names": {
+      "en": [
+        "Spring Cubchoo"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "623",
+    "name": "Hero Golurk",
+    "other_names": {
+      "en": [
+        "Halloween Golurk"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "623",
+    "name": "Ruined Golurk",
+    "other_names": {
+      "en": [
+        "Halloween Golurk"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "626",
+    "name": "Minotaur Bouffalant",
+    "other_names": {
+      "en": [
+        "Anniversary Bouffalant"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "627",
+    "name": "Pride Rufflet",
+    "other_names": {
+      "en": [
+        "Gay Pride Rufflet"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "636",
+    "name": "Crystal Larvesta",
+    "other_names": {
+      "en": [
+        "Winter Larvesta"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "650",
+    "name": "Cooking Chespin",
+    "other_names": {
+      "en": [
+        "Thanksgiving Chespin"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "654",
+    "name": "Sage of Flames",
+    "other_names": {
+      "en": [
+        "Halloween Braixen"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "656",
+    "name": "Toadsie",
+    "other_names": {
+      "en": [
+        "Autumn Froakie"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "658",
+    "name": "Ash's Greninja",
+    "other_names": {
+      "en": [
+        "サトシゲッコウガ",
+        "Satoshigekkōga",
+        "Ash-Form",
+        "Forme Sacha"
+      ],
+      "unaccented": [
+        "サトシケッコウカ",
+        "Satoshigekkoga"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "659",
+    "name": "Nibbling Bunnelby",
+    "other_names": {
+      "en": [
+        "Thanksgiving Bunnelby"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "660",
+    "name": "Bonnersby",
+    "other_names": {
+      "en": [
+        "Halloween Diggersby"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "667",
+    "name": "Lion Dancer Litleo",
+    "other_names": {
+      "en": [
+        "Lunar Litleo"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "668",
+    "name": "Alebrije Pyroar",
+    "other_names": {
+      "en": [
+        "Día de Muertos Pyroar"
+      ],
+      "unaccented": [
+        "Dia de Muertos Pyroar"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "669",
+    "name": "Flower Fairy Flabébé",
+    "other_names": {
+      "en": [
+        "Autumn Flabébé"
+      ],
+      "unaccented": [
+        "Flower Fairy Flabebe",
+        "Autumn Flabebe"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "670",
+    "name": "Eternal Flower Floette",
+    "other_names": {
+      "en": [
+        "Spring Floette"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "672",
+    "name": "Autumn Skiddo",
+    "other_names": {},
+    "is_variant": true
+  },
+  {
+    "dex_number": "674",
+    "name": "Pacifier Pancham",
+    "other_names": {
+      "en": [
+        "Valentine's Pancham"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "678",
+    "name": "Snoozing Meowstic",
+    "other_names": {},
+    "is_variant": true
+  },
+  {
+    "dex_number": "679",
+    "name": "Cursed Blade Honedge",
+    "other_names": {
+      "en": [
+        "Anniversary Honedge"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "680",
+    "name": "Fancy Cutlery Doublade",
+    "other_names": {
+      "en": [
+        "Anniversary Doublade"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "698",
+    "name": "Snowy Amaura",
+    "other_names": {
+      "en": [
+        "Winter Amaura"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "700",
+    "name": "Pride Sylveon",
+    "other_names": {
+      "en": [
+        "Transgender Pride Sylveon"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "700",
+    "name": "Sylvirus",
+    "other_names": {
+      "en": [
+        "April Fool's Day Sylveon"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "703",
+    "name": "Halloween Carbink",
+    "other_names": {},
+    "is_variant": true
+  },
+  {
+    "dex_number": "704",
+    "name": "Goomy Brûlée",
+    "other_names": {
+      "en": [
+        "Anniversary Goomy"
+      ],
+      "unaccented": [
+        "Goomy Brulee"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "704",
+    "name": "Muddy Goomy",
+    "other_names": {
+      "en": [
+        "Autumn Goomy"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "707",
+    "name": "Baby Toy Klefki",
+    "other_names": {
+      "en": [
+        "Valentine's Klefki"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "710",
+    "name": "Large Pumpkaboo",
+    "other_names": {
+      "en": [
+        "おおきいサイズ",
+        "Ōkiisaizu",
+        "Größe L",
+        "Taille Maxi"
+      ],
+      "unaccented": [
+        "おおきいサイス",
+        "Okiisaizu",
+        "Große L"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "710",
+    "name": "Pumpkaboo Spice Latte",
+    "other_names": {
+      "en": [
+        "Autumn Pumpkaboo",
+        "Pitrouille"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "710",
+    "name": "Small Pumpkaboo",
+    "other_names": {
+      "en": [
+        "ちいさいサイズ",
+        "Chiisaisaizu",
+        "Größe S",
+        "Taille Mini"
+      ],
+      "unaccented": [
+        "ちいさいサイス",
+        "Große S"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "710",
+    "name": "Super Pumpkaboo",
+    "other_names": {
+      "en": [
+        "とくだいサイズ",
+        "Tokudaisaizu",
+        "Größe XL",
+        "Taille Ultra"
+      ],
+      "unaccented": [
+        "とくたいサイス",
+        "Große XL"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "711",
+    "name": "Large Gourgeist",
+    "other_names": {
+      "en": [
+        "おおきいサイズ",
+        "Ōkiisaizu",
+        "Größe L",
+        "Taille Maxi"
+      ],
+      "unaccented": [
+        "おおきいサイス",
+        "Okiisaizu",
+        "Große L"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "711",
+    "name": "Small Gourgeist",
+    "other_names": {
+      "en": [
+        "ちいさいサイズ",
+        "Chiisaisaizu",
+        "Größe S",
+        "Taille Mini"
+      ],
+      "unaccented": [
+        "ちいさいサイス",
+        "Große S"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "711",
+    "name": "Super Gourgeist",
+    "other_names": {
+      "en": [
+        "とくだいサイズ",
+        "Tokudaisaizu",
+        "Größe XL",
+        "Taille Ultra"
+      ],
+      "unaccented": [
+        "とくたいサイス",
+        "Große XL"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "722",
+    "name": "Christmas Rowlet",
+    "other_names": {
+      "en": [
+        "Festive Rowlet"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "724",
+    "name": "Cupid Decidueye",
+    "other_names": {},
+    "is_variant": true
+  },
+  {
+    "dex_number": "733",
+    "name": "Pride Toucannon",
+    "other_names": {
+      "en": [
+        "Bisexual Pride Toucannon"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "737",
+    "name": "Camper Charjabug",
+    "other_names": {
+      "en": [
+        "Summer Charjabug",
+        "Chrysapile"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "741",
+    "name": "Cheerleader Oricorio",
+    "other_names": {
+      "en": [
+        "Summer Oricorio"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "742",
+    "name": "Candy Corn Cutiefly",
+    "other_names": {
+      "en": [
+        "Halloween Cutiefly"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "755",
+    "name": "Halloween Morelull",
+    "other_names": {},
+    "is_variant": true
+  },
+  {
+    "dex_number": "756",
+    "name": "Overgrown Shiinotic",
+    "other_names": {
+      "en": [
+        "Halloween Shiinotic"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "757",
+    "name": "Fire Fairy Salandit",
+    "other_names": {
+      "en": [
+        "Autumn Salandit"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "759",
+    "name": "Polar Stufful",
+    "other_names": {
+      "en": [
+        "Winter Stufful"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "760",
+    "name": "Fazwear",
+    "other_names": {
+      "en": [
+        "Frewear"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "762",
+    "name": "Egg Searching Steenee",
+    "other_names": {
+      "en": [
+        "Spring Steenee"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "764",
+    "name": "Pride Comfey",
+    "other_names": {},
+    "is_variant": true
+  },
+  {
+    "dex_number": "764",
+    "name": "Wreath Comfey",
+    "other_names": {
+      "en": [
+        "Festive Comfey"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "771",
+    "name": "Lights Pyukumuku",
+    "other_names": {
+      "en": [
+        "Festive Pyukumuku"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "774",
+    "name": "Rainbow Minior",
+    "other_names": {
+      "en": [
+        "Pride Minior"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "775",
+    "name": "Presents Komala",
+    "other_names": {
+      "en": [
+        "Festive Komala"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "777",
+    "name": "Easter Togedemaru",
+    "other_names": {},
+    "is_variant": true
+  },
+  {
+    "dex_number": "778",
+    "name": "Busted Mimikyu",
+    "other_names": {
+      "en": [
+        "Entlarvte Form",
+        "Forme Démasquée"
+      ],
+      "unaccented": [
+        "Forme Demasquee"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "779",
+    "name": "Pride Queen Bruxish",
+    "other_names": {
+      "en": [
+        "Pride Bruxish"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "814",
+    "name": "Relay Race Raboot",
+    "other_names": {
+      "en": [
+        "Summer Raboot"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "818",
+    "name": "Fencinteleon",
+    "other_names": {
+      "en": [
+        "Fencing Inteleon"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "819",
+    "name": "Painted Acorn Skwovet",
+    "other_names": {
+      "en": [
+        "Pride Skwovet"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "830",
+    "name": "Ornament Eldegoss",
+    "other_names": {
+      "en": [
+        "Festive Eldegoss"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "831",
+    "name": "Anniversary Wooloo",
+    "other_names": {
+      "en": [
+        "記念日ウールー",
+        "Kinenbiūrū",
+        "Kinenbi Wooloo",
+        "Jahrestag Wooloo",
+        "Anniversaire Moumouton"
+      ],
+      "unaccented": [
+        "Kinenbiuru"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "837",
+    "name": "Coal Rolycoly",
+    "other_names": {
+      "en": [
+        "Christmas Rolycoly"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "840",
+    "name": "Strawberry Shortcake Applin",
+    "other_names": {
+      "en": [
+        "Anniversary Applin"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "841",
+    "name": "Pear Flapple",
+    "other_names": {
+      "en": [
+        "Thanksgiving Flapple"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "842",
+    "name": "Cake Appletun",
+    "other_names": {
+      "en": [
+        "Festive Appletun"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "848",
+    "name": "Boxel",
+    "other_names": {
+      "en": [
+        "Boxing Toxel"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "854",
+    "name": "Choco Sinistea",
+    "other_names": {
+      "en": [
+        "Winter Sinistea"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "854",
+    "name": "Good Luck Sinistea",
+    "other_names": {
+      "en": [
+        "St. Patrick's Day Sinistea"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "855",
+    "name": "Kettle Polteageist",
+    "other_names": {
+      "en": [
+        "Summer Polteageist",
+        "Polthégeist"
+      ],
+      "unaccented": [
+        "Polthegeist"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "859",
+    "name": "Elf Impidimp",
+    "other_names": {
+      "en": [
+        "Festive Impidimp"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "861",
+    "name": "Grinchsnarl",
+    "other_names": {
+      "en": [
+        "Grinch Grimmsnarl"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "863",
+    "name": "Cosy Perrserker",
+    "other_names": {
+      "en": [
+        "Sweater Weather Perrserker"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "865",
+    "name": "Nutcrack Sirfetch'd",
+    "other_names": {
+      "en": [
+        "Christmas Sirfetch'd"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "868",
+    "name": "Choco Milcery",
+    "other_names": {
+      "en": [
+        "Christmas Milcery"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "869",
+    "name": "Cupcake Alcremie",
+    "other_names": {
+      "en": [
+        "Anniversary Alcremie"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "870",
+    "name": "Dango Falinks",
+    "other_names": {
+      "en": [
+        "Anniversary Falinks"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "875",
+    "name": "Ice Present Eiscue",
+    "other_names": {
+      "en": [
+        "Christmas Eiscue"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "901",
+    "name": "Barbarian Bloodmoon Ursaluna",
+    "other_names": {
+      "en": [
+        "Anniversary Bloodmoon Ursaluna"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "903",
+    "name": "Snow Leopard Sneasler",
+    "other_names": {
+      "en": [
+        "Winter Sneasler"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "910",
+    "name": "Proud Crocalor",
+    "other_names": {
+      "en": [
+        "Pride Crocalor"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "915",
+    "name": "Egg Forager Lechonk",
+    "other_names": {
+      "en": [
+        "Easter Lechonk"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "924",
+    "name": "Pride Tandemaus",
+    "other_names": {},
+    "is_variant": true
+  },
+  {
+    "dex_number": "925",
+    "name": "Marshmallow Maushold",
+    "other_names": {
+      "en": [
+        "Summer Maushold",
+        "Famignol"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "926",
+    "name": "Hearts Fidough",
+    "other_names": {
+      "en": [
+        "Valentine's Fidough"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "927",
+    "name": "Autumn Dachsbun",
+    "other_names": {},
+    "is_variant": true
+  },
+  {
+    "dex_number": "928",
+    "name": "Christmas Tree Smoliv",
+    "other_names": {
+      "en": [
+        "Christmas Smoliv"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "929",
+    "name": "Christmas Tree Dolliv",
+    "other_names": {
+      "en": [
+        "Christmas Dolliv"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "930",
+    "name": "Christmas Tree Arboliva",
+    "other_names": {
+      "en": [
+        "Christmas Arboliva"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "932",
+    "name": "Mushroom Nacli",
+    "other_names": {
+      "en": [
+        "Autumn Nacli",
+        "Selutin"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "939",
+    "name": "Onigiri Bellibolt",
+    "other_names": {
+      "en": [
+        "Anniversary Bellibolt"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "945",
+    "name": "Raincoat Grafaiai",
+    "other_names": {
+      "en": [
+        "Autumn Grafaiai"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "959",
+    "name": "Pride Tinkaton",
+    "other_names": {
+      "en": [
+        "Lesbian Pride Tinkaton"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "960",
+    "name": "Candy Cane Wiglett",
+    "other_names": {
+      "en": [
+        "Christmas Wiglett"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "962",
+    "name": "Love Bombirdier",
+    "other_names": {
+      "en": [
+        "Valentine's Bombirdier"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "965",
+    "name": "Train Varoom",
+    "other_names": {
+      "en": [
+        "Christmas Varoom"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "999",
+    "name": "Gingerbread Gimmighoul",
+    "other_names": {
+      "en": [
+        "Christmas Gimmighoul"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "146",
+    "name": "Olympic Flame Moltres",
+    "other_names": {
+      "en": [
+        "Summer Moltres"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "150",
+    "name": "Shadow Mewtwo",
+    "other_names": {
+      "en": [
+        "ダークミュウツー",
+        "Dākumyūtsū",
+        "Dark Mewtwo",
+        "Crypto-Mewtwo",
+        "Mewtwo Obscur"
+      ],
+      "unaccented": [
+        "タークミュウツー",
+        "Dakumyutsu"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "151",
+    "name": "Lights Mew",
+    "other_names": {
+      "en": [
+        "Christmas Mew"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "151",
+    "name": "Pride Mew",
+    "other_names": {
+      "en": [
+        "Non-binary Pride Mew"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "249",
+    "name": "Shadow Lugia",
+    "other_names": {
+      "en": [
+        "ダークルギア",
+        "Dākurugia",
+        "Dark Lugia",
+        "Crypto-Lugia",
+        "Lugia Obscur"
+      ],
+      "unaccented": [
+        "タークルキア",
+        "Dakurugia"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "491",
+    "name": "Error Darkrai",
+    "other_names": {
+      "en": [
+        "April Fool's Day Darkrai"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "492",
+    "name": "Bouquet Shaymin",
+    "other_names": {
+      "en": [
+        "Spring Shaymin"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "493",
+    "name": "Glitched Beta Arceus",
+    "other_names": {
+      "en": [
+        "April Fool's Day Arceus"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "493",
+    "name": "Pride Arceus",
+    "other_names": {},
+    "is_variant": true
+  },
+  {
+    "dex_number": "716",
+    "name": "Shadow Xerneas",
+    "other_names": {
+      "en": [
+        "Halloween Xerneas"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "717",
+    "name": "Ice Yveltal",
+    "other_names": {
+      "en": [
+        "Christmas Yveltal"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "719",
+    "name": "Spring Blooming Diancie",
+    "other_names": {
+      "en": [
+        "Spring Diancie"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "720",
+    "name": "Festive Hoopa",
+    "other_names": {
+      "en": [
+        "クリスマスフーパ",
+        "Kurisumasufūpa",
+        "Christmas Hoopa",
+        "Weihnachten Hoopa",
+        "Hoopa Festif"
+      ],
+      "unaccented": [
+        "クリスマスフーハ",
+        "Kurisumasufupa"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "789",
+    "name": "Fireworks Cosmog",
+    "other_names": {
+      "en": [
+        "New Year's Eve Cosmog"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "795",
+    "name": "Flower Pheromosa",
+    "other_names": {
+      "en": [
+        "Spring Pheromosa"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "806",
+    "name": "Corrupted Blacephalon",
+    "other_names": {
+      "en": [
+        "April Fool's Day Blacephalon"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "806",
+    "name": "Ghost King Blacephalon",
+    "other_names": {
+      "en": [
+        "Halloween Blacephalon"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "893",
+    "name": "Druid Zarude",
+    "other_names": {
+      "en": [
+        "Anniversary Zarude"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "896",
+    "name": "Primal Glastrier",
+    "other_names": {
+      "en": [
+        "Winter Glastrier"
+      ]
+    },
+    "is_variant": true
+  },
+  {
+    "dex_number": "1004",
+    "name": "Gradient Chi-Yu",
+    "other_names": {
+      "en": [
+        "Pride Chi-Yu"
+      ]
+    },
+    "is_variant": true
+  }
+]
