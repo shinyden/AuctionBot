@@ -52,6 +52,7 @@ DATA_DIR              = pathlib.Path(__file__).parent / "data"
 POKEMON_NAMES_FILE    = DATA_DIR / "pokemon_names.json"
 EVOLUTION_CSV_FILE    = DATA_DIR / "evolution.csv"
 CDN_MAPPING_CSV_FILE  = DATA_DIR / "pokemon_cdn_mapping.csv"
+EVENT_NAMES_FILE = DATA_DIR / "event_names.json"  # adjust path to match where you put it
 
 # ─── IV Bar Settings ──────────────────────────────────────────────────────────
 IV_BAR_FILLED  = "█"
