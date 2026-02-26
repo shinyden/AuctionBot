@@ -561,6 +561,7 @@ def build_query(
                 "price": "bid",
                 "level": "lv",
                 "date":  "ts",
+                "id":    "aid",
             }
             if sv.endswith("+"):
                 direction, key = 1, sv[:-1]
