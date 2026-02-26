@@ -42,7 +42,7 @@ CATEGORIES: dict = {
         "name": "Mythical Pokémon",
         "aliases": ["mythical", "myth", "my"],
         "pokemon": [
-            "Volcanion","Marshadow","Meloetta","Genesect","Magearna","Jirachi","Manaphy","Darkrai","Shaymin","Victini","Diancie","Zeraora","Celebi","Deoxys","Phione","Arceus","Keldeo","Meltan","Hoopa","Mew","Gigantamax Melmetal","Pirouette Meloetta","Original Magearna","Electric Arceus","Fighting Arceus","Resolute Keldeo","Defense Deoxys","Attack Deoxys","Dragon Arceus","Hoopa Unbound","Speed Deoxys","Mega Diancie","Sky Shaymin","Dark Arceus","Fire Arceus","Dada Zarude","Bug Arceus","Pecharunt","Melmetal","Zarude","High-speed Flight Configuration Genesect","Spring Blooming Diancie","Zenith Marshadow","Bouquet Shaymin","Psychic Arceus","Flying Arceus","Ground Arceus","Poison Arceus","Festive Hoopa","Error Darkrai","Ghost Arceus","Grass Arceus","Steel Arceus","Water Arceus","Fairy Arceus","Pride Arceus","Rock Arceus","Ice Arceus","Lights Mew","Pride Mew","Glitched Beta Arceus","Druid Zarude" 
+            "Volcanion","Marshadow","Meloetta","Genesect","Magearna","Jirachi","Manaphy","Darkrai","Shaymin","Victini","Diancie","Zeraora","Celebi","Deoxys","Phione","Arceus","Keldeo","Meltan","Hoopa","Mew","Gigantamax Melmetal","Pirouette Meloetta","Original Magearna","Electric Arceus","Fighting Arceus","Resolute Keldeo","Defense Deoxys","Attack Deoxys","Dragon Arceus","Hoopa Unbound","Speed Deoxys","Mega Diancie","Sky Shaymin","Dark Arceus","Fire Arceus","Dada Zarude","Bug Arceus","Pecharunt","Melmetal","Zarude","High-speed Flight Configuration Genesect","Spring Blooming Diancie","Zenith Marshadow","Bouquet Shaymin","Psychic Arceus","Flying Arceus","Ground Arceus","Poison Arceus","Festive Hoopa","Error Darkrai","Ghost Arceus","Grass Arceus","Steel Arceus","Water Arceus","Fairy Arceus","Pride Arceus","Rock Arceus","Ice Arceus","Lights Mew","Pride Mew","Glitched Beta Arceus","Druid Zarude" ,
         ],
     },
 
@@ -65,6 +65,34 @@ CATEGORIES: dict = {
         "aliases": ["megapokemon", "megas", "megapokemons"],
         "pokemon": [
         "Mega Charizard X","Mega Charizard Y","Mega Kangaskhan","Mega Aerodactyl","Mega Blastoise","Mega Heracross","Mega Tyranitar","Mega Gardevoir","Mega Venusaur","Mega Alakazam","Mega Gyarados","Mega Mewtwo X","Mega Mewtwo Y","Mega Ampharos","Mega Houndoom","Mega Blaziken","Mega Gengar","Mega Pinsir","Mega Scizor","Mega Mawile","Mega Manectric","Mega Abomasnow","Mega Sceptile","Mega Swampert","Mega Medicham","Mega Sharpedo","Mega Garchomp","Mega Pidgeot","Mega Slowbro","Mega Steelix","Mega Sableye","Mega Altaria","Mega Banette","Mega Lucario","Mega Gallade","Mega Aggron","Mega Latias","Mega Latios","Mega Audino","Mega Absol","Mega Salamence","Mega Metagross","Primal Groudon","Mega Beedrill","Mega Camerupt","Primal Kyogre","Mega Rayquaza","Mega Lopunny","Mega Diancie","Mega Glalie" ,
+        ],
+    },
+    "alolan": {
+        "name": "Alolan Pokémon",
+        "aliases": ["alola", "alo"],
+        "pokemon": [
+            "Halloween Alolan Ninetales","Birthday Cake Alopix","Alolan Sandshrew","Alolan Sandslash","Alolan Ninetales","Alolan Exeggutor","Alolan Raticate","Alolan Graveler","Alolan Rattata","Alolan Diglett","Alolan Dugtrio","Alolan Persian","Alolan Geodude","Alolan Marowak","Alolan Raichu","Alolan Vulpix","Alolan Meowth","Alolan Grimer","Alolan Golem","Alolan Muk","Celebrating Alolan Exeggutor ft. Komala" ,
+        ],
+    },
+    "galarian": {
+        "name": "Galarian Pokémon",
+        "aliases": ["galari", "gal"],
+        "pokemon": [
+            "Galarian Zen Darmanitan","Galarian Farfetch'd","Galarian Darmanitan","Galarian Zigzagoon","Galarian Rapidash","Galarian Slowpoke","Galarian Mr. Mime","Galarian Articuno","Galarian Slowking","Galarian Darumaka","Galarian Stunfisk","Galarian Slowbro","Galarian Weezing","Galarian Moltres","Galarian Corsola","Galarian Linoone","Galarian Meowth","Galarian Ponyta","Galarian Zapdos","Galarian Yamask" ,
+        ],
+    },
+    "hisuian": {
+        "name": "Hisuian Pokémon",
+        "aliases": ["hisui", "his"],
+        "pokemon": [
+            "La Catrina Hisuian Lilligant","Hisuian Typhlosion","Hisuian Growlithe","Hisuian Electrode","Hisuian Lilligant","Hisuian Decidueye","Hisuian Arcanine","Hisuian Qwilfish","Hisuian Samurott","Hisuian Braviary","Hisuian Voltorb","Hisuian Sneasel","Hisuian Zoroark","Hisuian Sliggoo","Hisuian Avalugg","Hisuian Goodra","Santa H. Zorua","Hisuian Zorua" ,
+        ],
+    },
+    "paldean": {
+        "name": "Paldean Pokémon",
+        "aliases": ["paldea", "pal",],
+        "pokemon": [
+            "Combat Breed Tauros","Blaze Breed Tauros","Aqua Breed Tauros","Paldean Wooper" ,
         ],
     },
 
