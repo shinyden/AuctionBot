@@ -248,7 +248,7 @@ FLAG_DEFINITIONS: dict[str, dict] = {
         "aliases":     ["--orderby", "--order", "--or"],
         "takes_arg":   True,
         "multi":       False,
-        "help":        "Sort: iv+/iv- | price+/price- | level+/level- | date+/date- (default: date-)",
+        "help": "Sort: iv+/iv- | price+/price- | level+/level- | date+/date- | id+/id- (default: date-)",
         "mongo_field": None,
     },
 
