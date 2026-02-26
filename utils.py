@@ -23,10 +23,14 @@ from pathlib import Path
 
 from config import (
     POKEMON_NAMES_FILE, EVENT_NAMES_FILE, EVOLUTION_CSV_FILE, CDN_MAPPING_CSV_FILE,
+    POKEMON_DATA_CSV_FILE,
     CDN_BASE_URL, CDN_SHINY_URL, IV_BAR_FILLED, IV_BAR_EMPTY, IV_BAR_LENGTH,
     get_gender_emoji,
 )
-from filters import resolve_flag, get_flag_info, is_flag
+from filters import (
+    resolve_flag, get_flag_info, is_flag,
+    resolve_category_shortcut, is_category_shortcut,
+)
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -82,6 +86,10 @@ class PokemonNameDB:
                     self._map[normalize(str(value))] = canonical
 
     def resolve(self, user_input: str) -> str | None:
+        """
+        Resolve user_input to a canonical English name.
+        Exact normalized match only — no partial matching.
+        """
         return self._map.get(normalize(user_input))
 
     def all_names(self) -> list[str]:
@@ -99,6 +107,128 @@ def get_name_db() -> PokemonNameDB:
 
 def resolve_pokemon_name(user_input: str) -> str | None:
     return get_name_db().resolve(user_input)
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# POKEMON DATA  (dex number, types, region — loaded once from pokemon_data.csv)
+# ─────────────────────────────────────────────────────────────────────────────
+
+class PokemonDataDB:
+    """
+    Loads pokemon_data.csv with columns:
+      dex_number, name, region, type1, type2
+
+    Provides:
+      get_dex_number(canonical_name) → int | None
+      get_names_by_dex(dex_number)   → list[str]   all canonical names sharing that dex
+      get_names_by_type(types)       → list[str]   names matching ALL given types
+      get_names_by_region(region)    → list[str]   names in that region
+    """
+
+    def __init__(self, csv_path: Path, name_db: PokemonNameDB):
+        # canonical_name (lower) → dex_number
+        self._name_to_dex: dict[str, int] = {}
+        # dex_number → set of canonical names
+        self._dex_to_names: dict[int, set[str]] = {}
+        # canonical_name (lower) → (type1_lower, type2_lower|"")
+        self._name_to_types: dict[str, tuple[str, str]] = {}
+        # canonical_name (lower) → region_lower
+        self._name_to_region: dict[str, str] = {}
+
+        self._load(csv_path, name_db)
+
+    def _load(self, path: Path, name_db: PokemonNameDB):
+        if not path.exists():
+            print(f"[WARN] pokemon_data.csv not found at {path}")
+            return
+
+        with open(path, encoding="utf-8") as f:
+            reader = csv.DictReader(f)
+            for row in reader:
+                raw_dex  = row.get("dex_number", "").strip()
+                raw_name = row.get("name", "").strip()
+                region   = row.get("region", "").strip()
+                type1    = row.get("type1", "").strip()
+                type2    = row.get("type2", "").strip()
+
+                if not raw_dex.lstrip("-").isdigit() or not raw_name:
+                    continue
+
+                dex = int(raw_dex)
+
+                # Try to resolve to canonical name via name_db; fall back to raw
+                canonical = name_db.resolve(raw_name) or raw_name
+                key = normalize(canonical)
+
+                self._name_to_dex[key] = dex
+                self._dex_to_names.setdefault(dex, set()).add(canonical)
+                self._name_to_types[key] = (type1.lower(), type2.lower())
+                self._name_to_region[key] = region.lower()
+
+    # ── Public API ─────────────────────────────────────────────────────────
+
+    def get_dex_number(self, canonical_name: str) -> int | None:
+        return self._name_to_dex.get(normalize(canonical_name))
+
+    def get_names_by_dex(self, dex_number: int) -> list[str]:
+        """Return all canonical names that share this dex number."""
+        return list(self._dex_to_names.get(dex_number, set()))
+
+    def get_names_by_type(self, types: list[str]) -> list[str]:
+        """
+        Return canonical names that have ALL given types (1 or 2 types).
+        Type matching is case-insensitive. A mon is included if every
+        requested type appears in its (type1, type2) tuple.
+        """
+        wanted = [t.lower() for t in types]
+        result = []
+        for key, (t1, t2) in self._name_to_types.items():
+            mon_types = {t1, t2} - {""}
+            if all(w in mon_types for w in wanted):
+                # Recover canonical name from dex map
+                dex = self._name_to_dex.get(key)
+                if dex is not None:
+                    for name in self._dex_to_names.get(dex, set()):
+                        if normalize(name) == key:
+                            result.append(name)
+                            break
+        return result
+
+    def get_names_by_region(self, region: str) -> list[str]:
+        """Return all canonical names in the given region (case-insensitive)."""
+        wanted = region.lower()
+        result = []
+        for key, reg in self._name_to_region.items():
+            if reg == wanted:
+                dex = self._name_to_dex.get(key)
+                if dex is not None:
+                    for name in self._dex_to_names.get(dex, set()):
+                        if normalize(name) == key:
+                            result.append(name)
+                            break
+        return result
+
+
+_pokemon_data_db: PokemonDataDB | None = None
+
+def get_pokemon_data_db() -> PokemonDataDB:
+    global _pokemon_data_db
+    if _pokemon_data_db is None:
+        _pokemon_data_db = PokemonDataDB(POKEMON_DATA_CSV_FILE, get_name_db())
+    return _pokemon_data_db
+
+
+def get_dex_family_names(canonical_name: str) -> list[str]:
+    """
+    Return all canonical names that share the same dex number as
+    canonical_name (i.e. all forms/variants of that species).
+    """
+    db  = get_pokemon_data_db()
+    dex = db.get_dex_number(canonical_name)
+    if dex is None:
+        return [canonical_name]
+    names = db.get_names_by_dex(dex)
+    return names if names else [canonical_name]
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -207,7 +337,7 @@ def get_pokemon_image_url(pokemon_name: str, shiny: bool = False) -> str | None:
 def parse_numeric_operator(val: str, field: str) -> dict | None:
     """
     Parse expressions like:
-      31          → {field: {"$gte": 31}}   (IV/level: at-least match)
+      31          → {field: {"$eq": 31}}
       >30         → {field: {"$gt": 30}}
       >=30        → {field: {"$gte": 30}}
       <100        → {field: {"$lt": 100}}
@@ -291,9 +421,15 @@ class TokenReader:
         return t
 
     def read_value_greedy(self) -> str:
-        """Consume tokens until the next flag or end, joining with spaces."""
+        """
+        Consume tokens until the next flag (or category shortcut) or end,
+        joining with spaces.
+        """
         parts = []
-        while self.pos < len(self.tokens) and not is_flag(self.tokens[self.pos]):
+        while self.pos < len(self.tokens):
+            tok = self.tokens[self.pos]
+            if is_flag(tok) or is_category_shortcut(tok):
+                break
             parts.append(self.next())
         return " ".join(parts)
 
@@ -302,32 +438,100 @@ class TokenReader:
 # QUERY BUILDER
 # ─────────────────────────────────────────────────────────────────────────────
 
-def build_query(raw_args: list[str]) -> tuple[dict, list, int | None]:
+def build_query(
+    raw_args: list[str],
+    expand_name_by_dex: bool = False,
+) -> tuple[dict, list, int | None]:
     """
     Parse raw CLI tokens into a (mongo_query_dict, mongo_sort_list, limit).
 
-    All generated query keys use the short DB field names.
-    Returns (query, sort, limit) — limit is None if --limit was not specified.
+    Name-pool logic
+    ───────────────
+    Two independent sets are built, then combined at the end:
+
+    name_pool  – UNION set, grown by --name and --evo.
+                 Each new --name / --evo adds its names to the pool.
+                 If the pool is empty at the end, there is no pn filter.
+
+    narrow_set – INTERSECTION set, built by --category / --type / --region.
+                 Each narrowing filter intersects the running set.
+                 If no narrowing filters were given, narrow_set stays None.
+
+    Final pn filter:
+      • Neither supplied            → no pn filter (match everything)
+      • Only name_pool              → pn.$in = name_pool
+      • Only narrow_set             → pn.$in = narrow_set
+      • Both                        → pn.$in = name_pool ∩ narrow_set
+
+    This means:
+      --n arceus --n pikachu           → pool = {all Arceus forms} ∪ {all Pikachu forms}
+      --ev --n arceus --type electric  → pool = event mons ∪ Arceus forms,
+                                         then narrow to electric-type only
+
+    Parameters
+    ----------
+    raw_args : list[str]
+        Tokenised input (result of filters.split()).
+    expand_name_by_dex : bool
+        When True (auction cog), --name expands to ALL canonical names sharing
+        the same dex number. When False (other cogs), resolves to the single
+        canonical English name only.
+
+    Returns
+    -------
+    (query, sort, limit)  — limit is None if --limit was not specified.
     """
     from categories import resolve_category
 
-    query: dict       = {}
-    sort: list        = [("ts", -1)]   # default: newest first
-    and_clauses: list = []
-    limit: int | None = None
+    query: dict        = {}
+    sort: list         = [("ts", -1)]   # default: newest first
+    and_clauses: list  = []
+    limit: int | None  = None
 
+    # ── Name resolution accumulators ──────────────────────────────────────────
+    # name_pool : grown by --name / --evo  (UNION semantics)
+    # narrow_set: shrunk by --category / --type / --region  (INTERSECT semantics)
+    name_pool:   set[str] | None = None   # None = not yet used
+    narrow_set:  set[str] | None = None   # None = not yet used
+    type_filters: list[str] = []          # accumulates up to 2 --type values
+
+    def _pool_add(names: set[str]) -> None:
+        """Add names to the name_pool (union)."""
+        nonlocal name_pool
+        if name_pool is None:
+            name_pool = set(names)
+        else:
+            name_pool |= names
+
+    def _narrow_intersect(names: set[str]) -> None:
+        """Intersect names into narrow_set."""
+        nonlocal narrow_set
+        if narrow_set is None:
+            narrow_set = set(names)
+        else:
+            narrow_set &= names
+
+    # ── Token loop ────────────────────────────────────────────────────────────
     reader = TokenReader(raw_args)
 
     while reader.peek() is not None:
-        token     = reader.next()
-        canonical = resolve_flag(token)
+        token = reader.next()
 
+        # ── Category shortcut (e.g. --rares, --starters, --ev) ───────────────
+        cat_key = resolve_category_shortcut(token)
+        if cat_key is not None:
+            cat = resolve_category(cat_key)
+            if cat:
+                _narrow_intersect(set(cat["pokemon"]))
+            continue
+
+        canonical = resolve_flag(token)
         if canonical is None:
             continue
 
         info = get_flag_info(canonical)
 
-        # ── Boolean flags (shiny, gmax, noshiny, nogmax) ─────────────────────
+        # ── Boolean flags (shiny, gmax, noshiny, nogmax) ──────────────────────
         if not info.get("takes_arg"):
             mongo_field = info.get("mongo_field")
             if mongo_field:
@@ -364,61 +568,76 @@ def build_query(raw_args: list[str]) -> tuple[dict, list, int | None]:
                 direction, key = -1, sv[:-1]
             else:
                 direction, key = -1, sv
-
             field = sort_field_map.get(key)
             if field:
                 sort = [(field, direction)]
             continue
 
-        # ── Category ──────────────────────────────────────────────────────────
+        # ── Category (--category <n>) → INTERSECT into narrow_set ────────────────────
         if canonical == "--category":
             cat = resolve_category(val)
             if cat:
-                new_set = set(cat["pokemon"])
-                existing_in = query.get("pn", {}).get("$in")
-                if existing_in is not None:
-                    query["pn"] = {"$in": list(set(existing_in) & new_set)}
-                else:
-                    query["pn"] = {"$in": list(new_set)}
+                _narrow_intersect(set(cat["pokemon"]))
             continue
 
-        # ── Evo family ────────────────────────────────────────────────────────
+        # ── Evo family → UNION into name_pool ─────────────────────────────────
         if canonical == "--evo":
             family = get_evo_family(val)
             if family:
-                existing_in = query.get("pn", {}).get("$in")
-                if existing_in is not None:
-                    query["pn"] = {"$in": list(set(existing_in) | family)}
-                else:
-                    query["pn"] = {"$in": list(family)}
+                _pool_add(set(family))
             continue
 
-        # ── Name (multi-language, canonical match with accent-stripped fallback)
+        # ── Type → INTERSECT into narrow_set ─────────────────────────────────
+        if canonical == "--type":
+            if len(type_filters) < 2:
+                type_filters.append(val.strip())
+            # Re-derive every time a new type is added so the set is always
+            # based on the full type_filters list (handles --type fire --type flying).
+            type_names = set(get_pokemon_data_db().get_names_by_type(type_filters))
+            if type_names:
+                # Intersect with any pre-existing narrow_set from --region
+                # so order of flags doesn't matter.
+                if narrow_set is not None:
+                    narrow_set = narrow_set & type_names
+                else:
+                    narrow_set = type_names
+            continue
+
+        # ── Region → INTERSECT into narrow_set ───────────────────────────────
+        if canonical == "--region":
+            names = get_pokemon_data_db().get_names_by_region(val.strip())
+            if names:
+                _narrow_intersect(set(names))
+            continue
+
+        # ── Name → UNION into name_pool ───────────────────────────────────────
         if canonical == "--name":
             resolved = resolve_pokemon_name(val)
+
             if resolved:
-                # Exact match found in name DB (covers accented + unaccented aliases)
-                existing_in = query.get("pn", {}).get("$in")
-                if existing_in is not None:
-                    existing_in.append(resolved)
+                if expand_name_by_dex:
+                    dex_names = get_dex_family_names(resolved)
+                    names_to_add = set(dex_names) if dex_names else {resolved}
                 else:
-                    query["pn"] = {"$in": [resolved]}
+                    names_to_add = {resolved}
+                _pool_add(names_to_add)
             else:
-                # No match in DB — fall back to in-memory normalized search
-                # so "flower fairy flabebe" still finds "Flower Fairy Flabébé"
+                # Fallback: normalised substring search (covers accented event
+                # names not present in the main name DB).
                 norm_words = normalize(val).split()
                 name_db    = get_name_db()
-                matches    = list({
+                matches: set[str] = {
                     canonical_name
                     for norm_key, canonical_name in name_db._map.items()
                     if all(w in norm_key for w in norm_words)
-                })
+                }
                 if matches:
-                    existing_in = query.get("pn", {}).get("$in")
-                    if existing_in is not None:
-                        existing_in.extend(matches)
-                    else:
-                        query["pn"] = {"$in": matches}
+                    if expand_name_by_dex:
+                        expanded: set[str] = set()
+                        for m in matches:
+                            expanded.update(get_dex_family_names(m))
+                        matches = expanded
+                    _pool_add(matches)
             continue
 
         # ── Nature ────────────────────────────────────────────────────────────
@@ -497,6 +716,24 @@ def build_query(raw_args: list[str]) -> tuple[dict, list, int | None]:
                 existing = query.get(mongo_field, {})
                 existing.update(cond.get(mongo_field, {}))
                 query[mongo_field] = existing
+
+    # ── Assemble final pn filter ──────────────────────────────────────────────
+    # name_pool  = union of --name / --evo results
+    # narrow_set = intersection of --type / --region results
+    #
+    # Rules:
+    #   pool only   → match exactly those names
+    #   narrow only → match exactly those names
+    #   both        → match names present in BOTH (pool ∩ narrow)
+    #   neither     → no pn filter (match all)
+    if name_pool is not None or narrow_set is not None:
+        if name_pool is not None and narrow_set is not None:
+            final_names = name_pool & narrow_set
+        elif name_pool is not None:
+            final_names = name_pool
+        else:
+            final_names = narrow_set  # type: ignore[assignment]
+        query["pn"] = {"$in": list(final_names)}
 
     if and_clauses:
         query.setdefault("$and", []).extend(and_clauses)
