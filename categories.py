@@ -53,6 +53,20 @@ CATEGORIES: dict = {
             'Ghost King Blacephalon', 'Corrupted Blacephalon', 'Flower Pheromosa', 'Blacephalon', 'Celesteela', 'Pheromosa', 'Xurkitree', 'Naganadel', 'Stakataka', 'Nihilego', 'Buzzwole', 'Guzzlord', 'Kartana', 'Poipole',
         ],
     },
+    "paradox": {
+        "name": "Paradox Pokémon",
+        "aliases": ["para", "par", "dox"],
+        "pokemon": [
+            "Brute Bonnet","Flutter Mane","Slither Wing","Sandy Shocks","Iron Jugulis","Roaring Moon","Iron Valiant","Walking Wake","Gouging Fire","Scream Tail","Iron Treads","Iron Bundle","Iron Thorns","Iron Leaves","Raging Bolt","Great Tusk","Iron Hands","Iron Moth","Koraidon","Miraidon","Iron Boulder","Iron Crown" ,
+        ],
+    },
+    "mega": {
+        "name": "Mythical Pokémon",
+        "aliases": ["megapokemon", "megas", "megapokemons"],
+        "pokemon": [
+        "Mega Charizard X","Mega Charizard Y","Mega Kangaskhan","Mega Aerodactyl","Mega Blastoise","Mega Heracross","Mega Tyranitar","Mega Gardevoir","Mega Venusaur","Mega Alakazam","Mega Gyarados","Mega Mewtwo X","Mega Mewtwo Y","Mega Ampharos","Mega Houndoom","Mega Blaziken","Mega Gengar","Mega Pinsir","Mega Scizor","Mega Mawile","Mega Manectric","Mega Abomasnow","Mega Sceptile","Mega Swampert","Mega Medicham","Mega Sharpedo","Mega Garchomp","Mega Pidgeot","Mega Slowbro","Mega Steelix","Mega Sableye","Mega Altaria","Mega Banette","Mega Lucario","Mega Gallade","Mega Aggron","Mega Latias","Mega Latios","Mega Audino","Mega Absol","Mega Salamence","Mega Metagross","Primal Groudon","Mega Beedrill","Mega Camerupt","Primal Kyogre","Mega Rayquaza","Mega Lopunny","Mega Diancie","Mega Glalie" ,
+        ],
+    },
 
     "event": {
         "name": "Event Pokémon",
