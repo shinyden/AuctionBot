@@ -14,6 +14,12 @@ Field mapping (DB short name → meaning):
   mv   = moves               bid  = winning_bid
   bdr  = bidder_id           sn   = seller_name
   sid  = seller_id
+
+--name behaviour in THIS cog:
+  Resolves to the canonical English name, then expands to ALL canonical names
+  that share the same dex number (forms, variants, gigantamax, etc.).
+  e.g. --name bulbasaur  →  matches Bulbasaur AND Ivysaur AND Venusaur AND
+                             Mega Venusaur AND Gigantamax Venusaur
 """
 from __future__ import annotations
 
@@ -301,7 +307,12 @@ def create_help_view(page: int = 0) -> discord.ui.LayoutView:
     cat_lines = []
     for c in list_categories():
         aliases_s = ", ".join(c["aliases"][:4])
-        cat_lines.append(f"{REPLY} `{c['key']}` **{c['name']}** — _{aliases_s}_")
+        cat_lines.append(
+            f"{REPLY} `{c['key']}` **{c['name']}** — _{aliases_s}_  "
+            f"_(also: `--{c['key']}`"
+            + (f", `--{c['aliases'][0]}`" if c["aliases"] else "")
+            + ")_"
+        )
 
     examples = (
         f"{REPLY} `j!a s --name Alcremie --gmax`\n"
@@ -309,6 +320,9 @@ def create_help_view(page: int = 0) -> discord.ui.LayoutView:
         f"{REPLY} `j!a s --atkiv 31 --spdiv 31 --sort price`\n"
         f"{REPLY} `j!a s --evo bulbasaur`\n"
         f"{REPLY} `j!a s --category starters --iv >=85`\n"
+        f"{REPLY} `j!a s --starters --iv >=85`\n"
+        f"{REPLY} `j!a s --type fire --type flying`\n"
+        f"{REPLY} `j!a s --region galar --shiny`\n"
         f"{REPLY} `j!a s --move fake out --level >50`\n"
         f"{REPLY} `j!a s --seller @user`\n"
         f"{REPLY} `j!a s --name goomy --limit 10`\n"
@@ -371,7 +385,7 @@ def create_help_view(page: int = 0) -> discord.ui.LayoutView:
         page_label = f"Page {page + 1}/{TOTAL_PAGES}"
         body = discord.ui.Container(
             discord.ui.TextDisplay(
-                content=f"**📦 Categories (`--category`)** _{page_label}_\n" + "\n".join(cat_lines)
+                content=f"**📦 Categories (`--category` or shortcut)** _{page_label}_\n" + "\n".join(cat_lines)
             ),
             discord.ui.Separator(visible=True, spacing=discord.SeparatorSpacing.small),
             discord.ui.TextDisplay(content="**💡 Examples:**\n" + examples),
@@ -408,9 +422,10 @@ class Auction(commands.Cog):
     @app_commands.describe(filters="Filters e.g: --name pikachu --shiny --iv >90 --sort price")
     async def auction_search(self, ctx: commands.Context, *, filters: str = ""):
         """Search past auctions with filters"""
-        raw              = filters.split() if filters else []
-        query, sort, limit = build_query(raw)
-        total            = _col.count_documents(query)
+        raw                  = filters.split() if filters else []
+        # expand_name_by_dex=True: --name bulbasaur matches all Bulbasaur dex-number forms
+        query, sort, limit   = build_query(raw, expand_name_by_dex=True)
+        total                = _col.count_documents(query)
 
         if total == 0:
             await ctx.send(view=_error_view("❌ No auctions found matching your filters."))
