@@ -41,7 +41,7 @@ FLAG_DEFINITIONS: dict[str, dict] = {
         "aliases":     ["--n", "-n", "--pokemon", "--poke"],
         "takes_arg":   True,
         "multi":       False,
-        "help":        "Pokémon name (exact canonical match, any language)",
+        "help":        "Pokémon name (exact canonical match, any language). In auction search, expands to all forms with the same dex number.",
         "mongo_field": "pn",       # handled specially in build_query (name resolution)
     },
 
@@ -225,6 +225,24 @@ FLAG_DEFINITIONS: dict[str, dict] = {
         "mongo_field": "gen",
     },
 
+    # ── Type ──────────────────────────────────────────────────────────────────
+    "--type": {
+        "aliases":     ["--t", "--types"],
+        "takes_arg":   True,
+        "multi":       True,   # stackable up to 2 times
+        "help":        "Filter by type (stackable up to 2, e.g. --type fire --type flying)",
+        "mongo_field": None,   # handled specially in build_query
+    },
+
+    # ── Region ────────────────────────────────────────────────────────────────
+    "--region": {
+        "aliases":     ["--r", "--reg"],
+        "takes_arg":   True,
+        "multi":       False,
+        "help":        "Filter by region (e.g. --region kanto, --region galar)",
+        "mongo_field": None,   # handled specially in build_query
+    },
+
     # ── Sort ──────────────────────────────────────────────────────────────────
     "--sort": {
         "aliases":     ["--orderby", "--order", "--or"],
@@ -255,7 +273,7 @@ FLAG_DEFINITIONS: dict[str, dict] = {
         "aliases":     ["--c", "--cat", "--group"],
         "takes_arg":   True,
         "multi":       False,
-        "help":        "Filter by category (e.g. rares, eevos, starters)",
+        "help":        "Filter by category (e.g. --category rares, --rares, --starters)",
         "mongo_field": None,
     },
 
@@ -318,3 +336,36 @@ def all_flags_help() -> list[dict]:
             "help":      data.get("help", ""),
         })
     return result
+
+
+# ─── Category shortcut support ───────────────────────────────────────────────
+# Populated at runtime by categories.py via register_category_shortcuts().
+# Maps "--<key>" and "--<alias>" → "--category" so the tokeniser treats them
+# as flags that forward their key as the argument value.
+
+_CATEGORY_SHORTCUT_MAP: dict[str, str] = {}   # token_lower → category key
+
+
+def register_category_shortcuts(keys_and_aliases: list[tuple[str, list[str]]]) -> None:
+    """
+    Called once by categories.py after loading category data.
+    keys_and_aliases: list of (category_key, [alias, ...])
+    """
+    global _CATEGORY_SHORTCUT_MAP
+    for key, aliases in keys_and_aliases:
+        _CATEGORY_SHORTCUT_MAP[f"--{key.lower()}"] = key
+        for alias in aliases:
+            _CATEGORY_SHORTCUT_MAP[f"--{alias.lower()}"] = key
+
+
+def resolve_category_shortcut(token: str) -> str | None:
+    """
+    Return the category key if token is a registered category shortcut,
+    otherwise None.
+    """
+    return _CATEGORY_SHORTCUT_MAP.get(token.lower())
+
+
+def is_category_shortcut(token: str) -> bool:
+    """Return True if token is a registered category shortcut flag."""
+    return token.lower() in _CATEGORY_SHORTCUT_MAP
