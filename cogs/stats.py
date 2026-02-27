@@ -1214,8 +1214,8 @@ class Stats(commands.Cog):
     async def lb_cmd(
         self,
         ctx: commands.Context,
-        lb_type: str = "pokemon",
-        variant: str = "shiny",
+        lb_type: str = "sellers",
+        variant: str = "overall",
     ):
         """Show a leaderboard (served from cache — updates every 6 hours)"""
         lb_type = lb_type.lower().strip()
@@ -1228,8 +1228,10 @@ class Stats(commands.Cog):
         if variant not in {"normal", "shiny", "gmax", "overall"}:
             variant = "overall"
 
-        # Leaderboard is instant — no ctx.typing() needed when cache is warm
-        view = _build_lb_view(lb_type, variant, "all", ctx.author.id, self.periods)
+        # Default period = current month (index 1 in periods list, e.g. "2026-02")
+        default_period = self.periods[1]["value"]
+
+        view = _build_lb_view(lb_type, variant, default_period, ctx.author.id, self.periods)
         await ctx.reply(view=view, mention_author=False, allowed_mentions=SAFE_MENTIONS)
 
     # ── j!market ──────────────────────────────────────────────────────────────
