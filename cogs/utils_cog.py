@@ -42,7 +42,7 @@ SAFE_MENTIONS = discord.AllowedMentions.none()
 
 # ── Defaults ──────────────────────────────────────────────────────────────────
 DEFAULT_ORDER = "expensive"
-DEFAULT_COUNT = 10
+DEFAULT_COUNT = 5
 MAX_COUNT     = 25   # hard ceiling so the embed doesn't blow up
 
 
@@ -154,7 +154,7 @@ def _error_view(text: str) -> discord.ui.LayoutView:
 # ═════════════════════════════════════════════════════════════════════════════
 
 # How far back to look for price data — keeps results reflecting current market.
-PRICE_LOOKBACK_MONTHS = 3
+PRICE_LOOKBACK_MONTHS = 2
 
 
 def _fetch_avg_prices(names: list[str]) -> dict[str, dict]:
