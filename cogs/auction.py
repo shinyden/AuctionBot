@@ -230,7 +230,7 @@ def create_info_view(record: dict) -> discord.ui.LayoutView:
         f"{REPLY} **Winning Bid:** `{bid_s}`\n"
         f"{REPLY} **Bidder:** {bidder_s}\n"
         f"{REPLY} **Seller:** {seller_s}\n"
-        f"{REPLY} **Date:** `{date_s}`"
+        f"{REPLY} **Ended On:** `{date_s}`"
     )
 
     iv_text = (
