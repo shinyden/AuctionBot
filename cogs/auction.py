@@ -249,7 +249,7 @@ def create_info_view(record: dict) -> discord.ui.LayoutView:
     )
 
     comps: list = [
-        discord.ui.TextDisplay(content=f"## [SOLD]{shiny_s}Auction #{auction_id}"),
+        discord.ui.TextDisplay(content=f"## [SOLD] {shiny_s}Auction #{auction_id}"),
         discord.ui.Separator(visible=True, spacing=discord.SeparatorSpacing.small),
     ]
 
