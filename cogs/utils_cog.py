@@ -546,7 +546,7 @@ class UtilsCog(commands.Cog, name="Utils"):
     # j!srlb  [spawnrate] [order] [count]
     # ──────────────────────────────────────────────────────────────────────────
 
-    @commands.hybrid_command(name="srlb", aliases=["spawnlb", "spawnrate"])
+    @commands.hybrid_command(name="srlb", aliases=["spawnlb", "spawnratelb"])
     @app_commands.describe(
         spawnrate="Spawn rate denominator, e.g. 225 for 1/225. Leave blank to list all tiers.",
         order="expensive (default) | cheap",
