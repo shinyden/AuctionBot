@@ -184,9 +184,15 @@ def _fetch_avg_prices(names: list[str]) -> dict[str, dict]:
         }},
     ]
 
+    # Build a lowercase → original name map so we can do case-insensitive
+    # matching between MongoDB pn values and the names we passed in.
+    names_lower = {n.lower(): n for n in names}
+
     result = {}
     for r in _col.aggregate(pipe):
-        name = r["_id"]
+        raw_name = r["_id"]
+        # Map back to the caller's casing (CSV casing) so dict keys are consistent
+        name = names_lower.get(raw_name.lower(), raw_name)
         bids = r["bids"]
         if not bids:
             continue
@@ -627,18 +633,27 @@ class UtilsCog(commands.Cog, name="Utils"):
             return
 
         denom, chance_str, pct_str = result
-        canonical = name.strip()   # use the raw input; CSV names are already canonical
 
-        # Fetch price data in executor
-        loop       = asyncio.get_event_loop()
-        price_data_map = await loop.run_in_executor(None, lambda: _fetch_avg_prices([canonical]))
-        price_data = price_data_map.get(canonical)
-
-        # Try to recover the properly-cased name from the CSV
+        # Always resolve the properly-cased name from the CSV first,
+        # so it matches the pn field in MongoDB exactly.
+        canonical = name.strip()
         for entry_name in db.names_for_tier(denom):
             if entry_name.lower() == canonical.lower():
                 canonical = entry_name
                 break
+
+        # Fetch price data using the correctly-cased canonical name
+        loop           = asyncio.get_event_loop()
+        price_data_map = await loop.run_in_executor(None, lambda: _fetch_avg_prices([canonical]))
+        price_data     = price_data_map.get(canonical)
+
+        # If still no match, try a case-insensitive scan of the result keys
+        # (handles any remaining casing mismatch between CSV and MongoDB pn field)
+        if price_data is None and price_data_map:
+            for key, val in price_data_map.items():
+                if key.lower() == canonical.lower():
+                    price_data = val
+                    break
 
         view = _build_srinfo_view(canonical, denom, chance_str, pct_str, price_data)
         await ctx.reply(view=view, mention_author=False, allowed_mentions=SAFE_MENTIONS)
