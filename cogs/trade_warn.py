@@ -19,7 +19,7 @@ Parsing rules:
   • "Gigantamax Haunter" will NOT match "Haunter" — only exact names trigger.
 
 The warning is sent as a reply to the trade message and auto-deletes after
-90 seconds so it doesn't clutter the channel.
+15 seconds so it doesn't clutter the channel.
 """
 from __future__ import annotations
 
@@ -49,12 +49,26 @@ TRADE_EVO_POKEMON: frozenset[str] = frozenset({
     "boldore",
     "gurdurr",
     "shelmet",
+    "electabuzz",     
+    "poliwhirl",    
+    "porygon", 
+    "spritzee", 
+    "slowpoke",        
+    "porygon2",      
+    "dusclops",        
+    "clamperl",        
+    "scyther",       
+    "swirlix",        
+    "rhydon",      
+    "seadra",      
+    "magmar",       
+    "onix",
 })
 
 # ── What each Pokémon evolves into when traded ─────────────────────────────────
 EVOLVES_INTO: dict[str, str] = {
     "alolan graveler": "Alolan Golem",
-    "karrablast":      "Escavalier (if traded with Shelmet)",
+    "karrablast":      "Escavalier",
     "pumpkaboo":       "Gourgeist",
     "graveler":        "Golem",
     "phantump":        "Trevenant",
@@ -63,7 +77,22 @@ EVOLVES_INTO: dict[str, str] = {
     "haunter":         "Gengar",
     "boldore":         "Gigalith",
     "gurdurr":         "Conkeldurr",
-    "shelmet":         "Accelgor (if traded with Karrablast)",
+    "shelmet":         "Accelgor",
+    "electabuzz":       "Electivire (while holding Electirizer)",
+    "poliwhirl":      "Politoed (while holding King's Rock)",
+    "porygon":       "Porygon2 (while holding Upgrade)",
+    "slowpoke":        "Slowking (while holding King's Rock)",
+    "porygon2":        "Porygon-z (while holding Dubious Disc)",
+    "dusclops":         "Dusknoir (while holding Reaper Cloth)",
+    "clamperl":         "Gorebyss (while holding Deep Sea Scale) or into Huntail (while holding Deep Sea Tooth)",
+    "scyther":         "Scizor (while holding Metal Coat)",
+    "swirlix":         "Slurpuff (while holding Whipped Dream)",
+    "rhydon":        "Rhyperior (while holding Protector)",
+    "seadra":        "Seaking (while holding Dragon Scale)",
+    "magmar":         "Magmortar (while holding Magmarizer)",
+    "spritzee":         "Aromatisse (while holding Sachet)",
+    "onix":         "Steelix (while holding Metal Coat)",
+    
 }
 
 # ── Regex to extract bold names from embed field values ───────────────────────
@@ -181,7 +210,7 @@ def _build_warning_view(
         "## 🔔 Trade Evolution Warning\n"
         "-# One or more Pokémon in this trade will **evolve** when traded.\n\n"
         + "\n\n".join(lines)
-        + "\n\n-# This message will auto-delete in 90 seconds."
+        + "\n\n-# This message will auto-delete in 15 seconds."
     )
 
     class WarnView(discord.ui.LayoutView):
@@ -255,8 +284,8 @@ class TradeEvoWarn(commands.Cog):
                 mention_author=False,
                 allowed_mentions=discord.AllowedMentions.none(),
             )
-            # Schedule auto-delete after 90 s
-            self.bot.loop.call_later(90, self.bot.loop.create_task, _try_delete(sent))
+            # Schedule auto-delete after 15 s
+            self.bot.loop.call_later(15, self.bot.loop.create_task, _try_delete(sent))
         except discord.HTTPException as e:
             log.warning("Failed to send trade evo warning: %s", e)
 
