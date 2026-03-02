@@ -31,6 +31,7 @@ COGS = [
     "cogs.graph",
     "cogs.price",
     "cogs.stats",
+    "cogs.utils_cog",
 ]
 
 
