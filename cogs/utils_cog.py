@@ -316,7 +316,7 @@ def _build_srlb_view(
                 outlier_s   = f"  •  _+{removed} ignored_" if removed else ""
                 lines.append(
                     f"{_medal(i)} **{r['name']}**\n"
-                    f"\u3000`{_fmt(r['median'])}` median  •  `{total_sales:,}` sales{outlier_s}\n"
+                    f"\u3000`{_fmt(r['median'])}` median  •  `{total_sales:,}` sales{outlier_s}"
                     f"\u3000typical `{_fmt(r['p25'])}` – `{_fmt(r['p75'])}`"
                 )
         body = "\n".join(lines)
