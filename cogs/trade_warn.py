@@ -88,7 +88,7 @@ EVOLVES_INTO: dict[str, str] = {
     "scyther":         "Scizor (while holding Metal Coat)",
     "swirlix":         "Slurpuff (while holding Whipped Dream)",
     "rhydon":        "Rhyperior (while holding Protector)",
-    "seadra":        "Seaking (while holding Dragon Scale)",
+    "seadra":        "Kingdra (while holding Dragon Scale)",
     "magmar":         "Magmortar (while holding Magmarizer)",
     "spritzee":         "Aromatisse (while holding Sachet)",
     "onix":         "Steelix (while holding Metal Coat)",
