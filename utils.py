@@ -20,11 +20,15 @@ import re
 import unicodedata
 from datetime import datetime, timezone
 from pathlib import Path
+import config
 
 from config import (
     POKEMON_NAMES_FILE, EVENT_NAMES_FILE, EVOLUTION_CSV_FILE, CDN_MAPPING_CSV_FILE,
     POKEMON_DATA_CSV_FILE,
-    CDN_BASE_URL, CDN_SHINY_URL, IV_BAR_FILLED, IV_BAR_EMPTY, IV_BAR_LENGTH,
+    CDN_BASE_URL, CDN_SHINY_URL,
+    IV_BAR_LENGTH,
+    FILLED_START, FILLED_MID, FILLED_END,
+    EMPTY_START, EMPTY_MID, EMPTY_END,
     get_gender_emoji,
 )
 from filters import (
