@@ -279,7 +279,7 @@ FLAG_DEFINITIONS: dict[str, dict] = {
 
       # ── Exclude ───────────────────────────────────────────────────────────────
     "--exclude": {
-        "aliases":     ["--ex", "--not", "--except", "--without"],
+        "aliases":     ["--ex", "--not", "--no", "--except", "--without"],
         "takes_arg":   True,
         "multi":       True,
         "help":        "Exclude by category, name, evo family, type, or region (e.g. --ex event, --ex pikachu, --ex fire)",
