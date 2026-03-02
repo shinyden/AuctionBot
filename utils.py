@@ -758,45 +758,37 @@ def format_date(record: dict) -> str:
     return dt.strftime("%-m/%-d/%y")
 
 
-def iv_bar(value: int | None, max_val: int = 31, length: int = config.IV_BAR_LENGTH) -> str:
-    """Build a progress bar using custom Discord emojis. length = total segments."""
+def iv_bar(value: int | None, max_val: int = 31, length: int = 9) -> str:
     if value is None:
         value = 0
-    filled = round((value / max_val) * length)
-    filled = max(0, min(filled, length))
-    empty  = length - filled
 
-    # length is: 1 start + (length-2) mids + 1 end
-    inner = length - 2  # number of mid slots
+    # Use only first (length-1) segments for the actual bar,
+    # last segment is reserved: filled only if value == max_val
+    inner_length = length - 1
+    filled = round((value / max_val) * inner_length)
+    filled = max(0, min(filled, inner_length))
 
-    if filled == 0:
-        # All empty
-        bar = config.EMPTY_START + config.EMPTY_MID * inner + config.EMPTY_END
-    elif filled == length:
-        # All filled
-        bar = config.FILLED_START + config.FILLED_MID * inner + config.FILLED_END
+    # Last segment
+    last_filled = (value == max_val)
+
+    total_filled = filled + (1 if last_filled else 0)
+    total_empty  = length - total_filled
+
+    inner = length - 2  # mid slots
+
+    if total_filled == 0:
+        bar = EMPTY_START + EMPTY_MID * inner + EMPTY_END
+    elif total_filled == length:
+        bar = FILLED_START + FILLED_MID * inner + FILLED_END
     else:
-        # Mixed — filled segments use filled emojis, empty use empty emojis
-        # filled covers: start + some mids; empty covers: remaining mids + end
-        filled_mids = max(0, filled - 1)       # start takes 1 filled slot
-        empty_mids  = max(0, inner - filled_mids)  # remaining mid slots go empty
-
-        if empty > 0:
-            # last segment is empty_end
-            bar = (
-                config.FILLED_START
-                + config.FILLED_MID * filled_mids
-                + config.EMPTY_MID  * empty_mids
-                + config.EMPTY_END
-            )
-        else:
-            # no empty mids, just filled + filled_end
-            bar = (
-                config.FILLED_START
-                + config.FILLED_MID * (inner - 0)
-                + config.FILLED_END
-            )
-
+        filled_mids = max(0, total_filled - 1)
+        empty_mids  = inner - filled_mids
+        bar = (
+            FILLED_START
+            + FILLED_MID * filled_mids
+            + EMPTY_MID  * empty_mids
+            + EMPTY_END
+        )
     return bar
 
 
