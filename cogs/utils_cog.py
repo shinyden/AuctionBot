@@ -313,11 +313,10 @@ def _build_srlb_view(
             else:
                 removed     = r.get("outliers_removed", 0)
                 total_sales = r.get("total_sales", r["count"])
-                typical_s   = f"`{_fmt(r['p25'])}` – `{_fmt(r['p75'])}`"
                 outlier_s   = f"  •  _+{removed} ignored_" if removed else ""
                 lines.append(
                     f"{_medal(i)} **{r['name']}**\n"
-                    f"\u3000median `{_fmt(r['median'])}`  •  avg `{_fmt(r['avg'])}`  •  `{total_sales:,}` sales{outlier_s}\n"
+                    f"\u3000`{_fmt(r['median'])}` median  •  `{total_sales:,}` sales{outlier_s}\n"
                     f"\u3000typical `{_fmt(r['p25'])}` – `{_fmt(r['p75'])}`"
                 )
         body = "\n".join(lines)
@@ -474,9 +473,9 @@ async def _compute_and_build(
                 "pct":              "?",
             })
 
-    # Sort by avg price
+    # Sort by median price
     reverse = (order == "expensive")
-    rows_with_data.sort(key=lambda r: r["avg"], reverse=reverse)
+    rows_with_data.sort(key=lambda r: r["median"], reverse=reverse)
 
     total_in_tier    = len(names)
     total_with_data  = len(rows_with_data)
@@ -511,7 +510,7 @@ def _build_srinfo_view(name: str, denom: int, chance: str, pct: str,
         outlier_s   = f"  _(+{removed} extreme sale{'s' if removed > 1 else ''} ignored)_" if removed else ""
         price_block = (
             f"**💰 Shiny Auction Prices** _(✨ shiny  •  last 3 months)_\n"
-            f"{REPLY} Median: `{_fmt(price_data['median'])}`  •  Avg: `{_fmt(price_data['avg'])}`{outlier_s}\n"
+            f"{REPLY} Median: `{_fmt(price_data['median'])}`{outlier_s}\n"
             f"{REPLY} Typical range: `{_fmt(price_data['p25'])}` – `{_fmt(price_data['p75'])}` _(middle 50% of sales)_\n"
             f"{REPLY} Total sales: `{total_sales:,}`"
         )
