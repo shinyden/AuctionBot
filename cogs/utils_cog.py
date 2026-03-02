@@ -27,6 +27,7 @@ from pymongo import MongoClient
 
 import config
 from config import REPLY
+from utils import resolve_pokemon_name
 
 log = logging.getLogger(__name__)
 
@@ -493,16 +494,17 @@ async def _compute_and_build(
 # ═════════════════════════════════════════════════════════════════════════════
 
 def _build_srinfo_view(name: str, denom: int, chance: str, pct: str,
-                       price_data: dict | None) -> discord.ui.LayoutView:
-    tier_mons = get_spawn_db().names_for_tier(denom)
+                       price_data: dict | None,
+                       alias: str | None = None) -> discord.ui.LayoutView:
+    tier_mons  = get_spawn_db().names_for_tier(denom)
+    alias_line = f"\n{REPLY} _Resolved from: `{alias}`_" if alias else ""
 
     spawn_block = (
-        f"**🎲 Spawn Rate — {name}**\n"
+        f"**🎲 Spawn Rate — {name}**{alias_line}\n"
         f"{REPLY} Rate: `{chance}`  ({pct})\n"
         f"{REPLY} Tier: `1/{denom}` — shared with `{len(tier_mons)}` Pokémon\n"
         f"{REPLY} Use `j!srlb {denom}` to see the full tier leaderboard"
     )
-
     if price_data:
         removed     = price_data.get("outliers_removed", 0)
         total_sales = price_data.get("total_sales", price_data["count"])
@@ -610,7 +612,7 @@ class UtilsCog(commands.Cog, name="Utils"):
     # j!srinfo  <pokemon name>
     # ──────────────────────────────────────────────────────────────────────────
 
-    @commands.hybrid_command(name="srinfo", aliases=["spawninfo","spawnrate","sr"])
+    @commands.hybrid_command(name="srinfo", aliases=["spawninfo","sr","spawnrate"])
     @app_commands.describe(name="Pokémon name to look up")
     async def srinfo_cmd(self, ctx: commands.Context, *, name: str = ""):
         """
@@ -625,26 +627,34 @@ class UtilsCog(commands.Cog, name="Utils"):
             )
             return
 
-        db     = get_spawn_db()
-        result = db.tier_for_name(name.strip())
+        db         = get_spawn_db()
+        raw_input  = name.strip()
+
+        # Resolve any alias / other-language name to canonical English first
+        resolved = resolve_pokemon_name(raw_input)
+        lookup   = resolved if resolved else raw_input
+
+        result = db.tier_for_name(lookup)
 
         if result is None:
-            # Try fuzzy find
-            matches = db.fuzzy_find(name.strip())
+            matches = db.fuzzy_find(lookup)
+            if not matches and resolved:
+                matches = db.fuzzy_find(raw_input)
             if matches:
                 suggestions = ", ".join(f"**{m.title()}**" for m in matches[:5])
                 await ctx.reply(
                     view=_error_view(
-                        f"❌ `{name}` not found in spawn rate data.\n"
+                        f"❌ `{raw_input}` not found in spawn rate data.\n"
                         f"{REPLY} Did you mean: {suggestions}?"
                     ),
                     mention_author=False,
                 )
             else:
+                resolved_note = f"\n{REPLY} Resolved to: `{resolved}`" if resolved and resolved.lower() != raw_input.lower() else ""
                 await ctx.reply(
                     view=_error_view(
-                        f"❌ `{name}` not found in spawn rate data.\n"
-                        f"{REPLY} Spawn rate data only covers wild-spawnable Pokémon."
+                        f"❌ `{raw_input}` not found in spawn rate data.{resolved_note}\n"
+                        f"{REPLY} This Pokémon may not be wild-spawnable."
                     ),
                     mention_author=False,
                 )
@@ -652,11 +662,10 @@ class UtilsCog(commands.Cog, name="Utils"):
 
         denom, chance_str, pct_str = result
 
-        # Always resolve the properly-cased name from the CSV first,
-        # so it matches the pn field in MongoDB exactly.
-        canonical = name.strip()
+        # Recover properly-cased name from the CSV using the resolved lookup name
+        canonical = lookup
         for entry_name in db.names_for_tier(denom):
-            if entry_name.lower() == canonical.lower():
+            if entry_name.lower() == lookup.lower():
                 canonical = entry_name
                 break
 
@@ -673,7 +682,9 @@ class UtilsCog(commands.Cog, name="Utils"):
                     price_data = val
                     break
 
-        view = _build_srinfo_view(canonical, denom, chance_str, pct_str, price_data)
+        # Show alias note if user typed a different name than the canonical one
+        alias_note = raw_input if raw_input.lower() != canonical.lower() else None
+        view = _build_srinfo_view(canonical, denom, chance_str, pct_str, price_data, alias_note)
         await ctx.reply(view=view, mention_author=False, allowed_mentions=SAFE_MENTIONS)
 
 
