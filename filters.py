@@ -277,6 +277,15 @@ FLAG_DEFINITIONS: dict[str, dict] = {
         "mongo_field": None,
     },
 
+      # ── Exclude ───────────────────────────────────────────────────────────────
+    "--exclude": {
+        "aliases":     ["--ex", "--not", "--except", "--without"],
+        "takes_arg":   True,
+        "multi":       True,
+        "help":        "Exclude by category, name, evo family, type, or region (e.g. --ex event, --ex pikachu, --ex fire)",
+        "mongo_field": None,
+    },
+
     # ── Evolution family ──────────────────────────────────────────────────────
     "--evo": {
         "aliases":     ["--evolution", "--family", "--fam"],
