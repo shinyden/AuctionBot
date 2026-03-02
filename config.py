@@ -68,4 +68,4 @@ EMPTY_START  = "<:4_:1477903263335710842>"
 EMPTY_MID    = "<:5_:1477903253768507503>"
 EMPTY_END    = "<:6_:1477903255865397401>"
 
-IV_BAR_LENGTH = 17  # total segments (start + mids + end)
+IV_BAR_LENGTH = 10  # total segments (start + mids + end)
