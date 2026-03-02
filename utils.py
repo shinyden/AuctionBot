@@ -36,6 +36,9 @@ from filters import (
     resolve_category_shortcut, is_category_shortcut,
 )
 
+# Path to the forms CSV
+POKEMON_FORMS_FILE = Path("data/pokemon_forms.csv")
+
 
 # ─────────────────────────────────────────────────────────────────────────────
 # TEXT NORMALIZATION
@@ -111,6 +114,115 @@ def get_name_db() -> PokemonNameDB:
 
 def resolve_pokemon_name(user_input: str) -> str | None:
     return get_name_db().resolve(user_input)
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# POKEMON FORMS DB  (loaded once from pokemon_forms.csv)
+# ─────────────────────────────────────────────────────────────────────────────
+
+class FormsDB:
+    """
+    Loads data/pokemon_forms.csv  (2 columns: base_name, forms).
+    Column 2 is a comma-separated list of form names (may be quoted).
+
+    Provides:
+      resolve_name_to_forms(user_input) -> set[str]
+
+    Rules:
+      • If user_input matches a BASE name exactly
+          → return {base} ∪ {all its forms}
+      • If user_input matches a FORM name exactly
+          → return {that form only}
+      • Otherwise
+          → return empty set  (caller falls back to substring search)
+
+    Matching is normalised (case-insensitive, accent-stripped).
+    """
+
+    def __init__(self, csv_path: Path):
+        # norm(base_name) → canonical base name
+        self._base_map:   dict[str, str]       = {}
+        # norm(base_name) → frozenset of canonical form names
+        self._forms_map:  dict[str, frozenset[str]] = {}
+        # norm(form_name) → canonical form name
+        self._form_map:   dict[str, str]       = {}
+        # norm(form_name) → norm(base_name) it belongs to
+        self._form_to_base: dict[str, str]     = {}
+
+        self._load(csv_path)
+
+    def _load(self, path: Path):
+        if not path.exists():
+            print(f"[WARN] pokemon_forms.csv not found at {path}")
+            return
+
+        with open(path, encoding="utf-8") as f:
+            reader = csv.reader(f)
+            for row in reader:
+                if not row:
+                    continue
+
+                base_raw = row[0].strip()
+                if not base_raw:
+                    continue
+
+                base_norm = normalize(base_raw)
+                self._base_map[base_norm] = base_raw
+
+                # Parse forms from column 2 (comma-separated, already handled
+                # by csv.reader which strips the outer quotes)
+                forms: set[str] = set()
+                if len(row) > 1 and row[1].strip():
+                    for f in row[1].split(","):
+                        f = f.strip()
+                        if f:
+                            forms.add(f)
+                            fn = normalize(f)
+                            self._form_map[fn] = f
+                            self._form_to_base[fn] = base_norm
+
+                self._forms_map[base_norm] = frozenset(forms)
+
+    # ── Public API ─────────────────────────────────────────────────────────
+
+    def resolve_name_to_forms(self, user_input: str) -> set[str]:
+        """
+        Given user input, return the set of canonical names to search for.
+
+        Base name  → base + all its forms
+        Form name  → only that exact form
+        No match   → empty set
+        """
+        key = normalize(user_input)
+
+        # 1. Exact base match
+        if key in self._base_map:
+            base = self._base_map[key]
+            forms = self._forms_map.get(key, frozenset())
+            return {base} | set(forms)
+
+        # 2. Exact form match
+        if key in self._form_map:
+            return {self._form_map[key]}
+
+        # 3. No match
+        return set()
+
+    def all_names(self) -> set[str]:
+        """Return every canonical name (bases + forms) known to this DB."""
+        result: set[str] = set(self._base_map.values())
+        for forms in self._forms_map.values():
+            result |= set(forms)
+        return result
+
+
+_forms_db: FormsDB | None = None
+
+def get_forms_db() -> FormsDB:
+    global _forms_db
+    if _forms_db is None:
+        _forms_db = FormsDB(POKEMON_FORMS_FILE)
+    return _forms_db
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -452,7 +564,7 @@ def _resolve_exclude_names(val: str, expand_name_by_dex: bool) -> set[str]:
       2. Evo family (e.g. "pikachu" → entire evo line)
       3. Type      (e.g. "fire", "water")
       4. Region    (e.g. "kanto", "galar")
-      5. Name      (exact canonical name, expanded by dex if expand_name_by_dex)
+      5. Name      (exact canonical name, expanded by forms if expand_name_by_dex)
     """
     from categories import resolve_category as _resolve_cat
 
@@ -478,15 +590,17 @@ def _resolve_exclude_names(val: str, expand_name_by_dex: bool) -> set[str]:
     if region_names:
         return set(region_names)
 
-    # 5. Name (canonical or fuzzy fallback)
+    # 5. Name — use FormsDB when expand_name_by_dex, else single canonical
+    if expand_name_by_dex:
+        forms_result = get_forms_db().resolve_name_to_forms(val)
+        if forms_result:
+            return forms_result
+
     resolved = resolve_pokemon_name(val)
     if resolved:
-        if expand_name_by_dex:
-            dex_names = get_dex_family_names(resolved)
-            return set(dex_names) if dex_names else {resolved}
         return {resolved}
 
-    # Fuzzy substring fallback (same as --name)
+    # Fuzzy substring fallback
     norm_words = normalize(val).split()
     name_db    = get_name_db()
     matches: set[str] = {
@@ -497,7 +611,7 @@ def _resolve_exclude_names(val: str, expand_name_by_dex: bool) -> set[str]:
     if matches and expand_name_by_dex:
         expanded: set[str] = set()
         for m in matches:
-            expanded.update(get_dex_family_names(m))
+            expanded.update(get_forms_db().resolve_name_to_forms(m) or {m})
         return expanded
 
     return matches
@@ -539,21 +653,21 @@ def build_query(
       • Both                                  → pn.$in = (name_pool ∩ narrow_set) − exclude_set
       • Only exclude_set                      → pn.$nin = exclude_set
 
-    This means:
-      --n arceus --n pikachu            → pool = {all Arceus forms} ∪ {all Pikachu forms}
-      --ev --n arceus --type electric   → pool = event mons ∪ Arceus forms,
-                                          then narrow to electric-type only
-      --rares --ex event                → rares that are NOT event Pokémon
-      --ex event                        → everything EXCEPT event Pokémon ($nin)
+    --name expansion when expand_name_by_dex=True
+    ──────────────────────────────────────────────
+    Uses FormsDB (data/pokemon_forms.csv) instead of the dex-number approach:
+      • Base name  (e.g. "blastoise")        → base + all its forms
+      • Form name  (e.g. "mega blastoise")   → only that exact form
+      • No match in FormsDB                  → falls back to substring search
 
     Parameters
     ----------
     raw_args : list[str]
         Tokenised input (result of filters.split()).
     expand_name_by_dex : bool
-        When True (auction cog), --name expands to ALL canonical names sharing
-        the same dex number. When False (other cogs), resolves to the single
-        canonical English name only.
+        When True (auction cog), --name uses FormsDB to expand base names to
+        all their forms, or returns only the exact form if a form name is given.
+        When False (other cogs), resolves to a single canonical name only.
 
     Returns
     -------
@@ -567,16 +681,12 @@ def build_query(
     limit: int | None  = None
 
     # ── Name resolution accumulators ──────────────────────────────────────────
-    # name_pool  : grown by --name / --evo            (UNION semantics)
-    # narrow_set : shrunk by --category / --type / --region  (INTERSECT semantics)
-    # exclude_set: grown by --exclude / --ex          (SUBTRACTION semantics)
-    name_pool:   set[str] | None = None   # None = not yet used
-    narrow_set:  set[str] | None = None   # None = not yet used
-    exclude_set: set[str]        = set()  # names to remove from final result
-    type_filters: list[str]      = []     # accumulates up to 2 --type values
+    name_pool:   set[str] | None = None
+    narrow_set:  set[str] | None = None
+    exclude_set: set[str]        = set()
+    type_filters: list[str]      = []
 
     def _pool_add(names: set[str]) -> None:
-        """Add names to the name_pool (union)."""
         nonlocal name_pool
         if name_pool is None:
             name_pool = set(names)
@@ -584,7 +694,6 @@ def build_query(
             name_pool |= names
 
     def _narrow_intersect(names: set[str]) -> None:
-        """Intersect names into narrow_set."""
         nonlocal narrow_set
         if narrow_set is None:
             narrow_set = set(names)
@@ -597,7 +706,7 @@ def build_query(
     while reader.peek() is not None:
         token = reader.next()
 
-        # ── Category shortcut (e.g. --rares, --starters, --ev) ───────────────
+        # ── Category shortcut ─────────────────────────────────────────────────
         cat_key = resolve_category_shortcut(token)
         if cat_key is not None:
             cat = resolve_category(cat_key)
@@ -611,7 +720,7 @@ def build_query(
 
         info = get_flag_info(canonical)
 
-        # ── Boolean flags (shiny, gmax, noshiny, nogmax) ──────────────────────
+        # ── Boolean flags ─────────────────────────────────────────────────────
         if not info.get("takes_arg"):
             mongo_field = info.get("mongo_field")
             if mongo_field:
@@ -654,7 +763,7 @@ def build_query(
                 sort = [(field, direction)]
             continue
 
-        # ── Category (--category <n>) → INTERSECT into narrow_set ────────────
+        # ── Category → INTERSECT into narrow_set ─────────────────────────────
         if canonical == "--category":
             cat = resolve_category(val)
             if cat:
@@ -672,12 +781,8 @@ def build_query(
         if canonical == "--type":
             if len(type_filters) < 2:
                 type_filters.append(val.strip())
-            # Re-derive every time a new type is added so the set is always
-            # based on the full type_filters list (handles --type fire --type flying).
             type_names = set(get_pokemon_data_db().get_names_by_type(type_filters))
             if type_names:
-                # Intersect with any pre-existing narrow_set from --region
-                # so order of flags doesn't matter.
                 if narrow_set is not None:
                     narrow_set = narrow_set & type_names
                 else:
@@ -691,7 +796,7 @@ def build_query(
                 _narrow_intersect(set(names))
             continue
 
-        # ── Exclude → SUBTRACT from final name set ────────────────────────────
+        # ── Exclude ───────────────────────────────────────────────────────────
         if canonical == "--exclude":
             excluded = _resolve_exclude_names(val, expand_name_by_dex)
             if excluded:
@@ -700,32 +805,43 @@ def build_query(
 
         # ── Name → UNION into name_pool ───────────────────────────────────────
         if canonical == "--name":
-            resolved = resolve_pokemon_name(val)
-
-            if resolved:
-                if expand_name_by_dex:
-                    dex_names = get_dex_family_names(resolved)
-                    names_to_add = set(dex_names) if dex_names else {resolved}
+            if expand_name_by_dex:
+                # ── New FormsDB-based expansion ───────────────────────────────
+                # 1. Try FormsDB first (handles base names and exact form names)
+                forms_result = get_forms_db().resolve_name_to_forms(val)
+                if forms_result:
+                    _pool_add(forms_result)
                 else:
-                    names_to_add = {resolved}
-                _pool_add(names_to_add)
-            else:
-                # Fallback: normalised substring search (covers accented event
-                # names not present in the main name DB).
-                norm_words = normalize(val).split()
-                name_db    = get_name_db()
-                matches: set[str] = {
-                    canonical_name
-                    for norm_key, canonical_name in name_db._map.items()
-                    if all(w in norm_key for w in norm_words)
-                }
-                if matches:
-                    if expand_name_by_dex:
+                    # 2. Fallback: normalised substring search across all known names
+                    norm_words = normalize(val).split()
+                    name_db    = get_name_db()
+                    matches: set[str] = {
+                        canonical_name
+                        for norm_key, canonical_name in name_db._map.items()
+                        if all(w in norm_key for w in norm_words)
+                    }
+                    if matches:
+                        # Expand each substring match through FormsDB too
                         expanded: set[str] = set()
                         for m in matches:
-                            expanded.update(get_dex_family_names(m))
-                        matches = expanded
-                    _pool_add(matches)
+                            sub_forms = get_forms_db().resolve_name_to_forms(m)
+                            expanded.update(sub_forms if sub_forms else {m})
+                        _pool_add(expanded)
+            else:
+                # ── Original single-name resolution (non-auction cogs) ────────
+                resolved = resolve_pokemon_name(val)
+                if resolved:
+                    _pool_add({resolved})
+                else:
+                    norm_words = normalize(val).split()
+                    name_db    = get_name_db()
+                    matches = {
+                        canonical_name
+                        for norm_key, canonical_name in name_db._map.items()
+                        if all(w in norm_key for w in norm_words)
+                    }
+                    if matches:
+                        _pool_add(matches)
             continue
 
         # ── Nature ────────────────────────────────────────────────────────────
@@ -806,17 +922,6 @@ def build_query(
                 query[mongo_field] = existing
 
     # ── Assemble final pn filter ──────────────────────────────────────────────
-    #
-    # name_pool  = union of --name / --evo results
-    # narrow_set = intersection of --type / --region / --category results
-    # exclude_set= union of all --exclude / --ex results
-    #
-    # Rules:
-    #   pool + narrow → match names in BOTH, then subtract exclude_set
-    #   pool only     → match pool names, then subtract exclude_set
-    #   narrow only   → match narrow names, then subtract exclude_set
-    #   exclude only  → $nin exclude_set (no positive filter needed)
-    #   none          → no pn filter (match all)
     if name_pool is not None or narrow_set is not None:
         if name_pool is not None and narrow_set is not None:
             final_names = name_pool & narrow_set
@@ -831,7 +936,6 @@ def build_query(
         query["pn"] = {"$in": list(final_names)}
 
     elif exclude_set:
-        # No positive filter — exclude via $nin so all non-excluded mons match
         query["pn"] = {"$nin": list(exclude_set)}
 
     if and_clauses:
