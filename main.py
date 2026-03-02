@@ -32,6 +32,7 @@ COGS = [
     "cogs.price",
     "cogs.stats",
     "cogs.utils_cog",
+    "cogs.trade_warn",
 ]
 
 
