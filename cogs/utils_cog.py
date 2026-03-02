@@ -299,7 +299,7 @@ def _build_srlb_view(
     title       = f"## 🎲 Spawn Rate `1/{denom}` — {order_label}"
     sub         = (
         f"-# Showing top `{len(rows)}` of `{total_with_data}` Pokémon with auction data "
-        f"(`{total_in_tier}` total in this tier)  •  ✨ shiny  •  last 3 months"
+        f"(`{total_in_tier}` total in this tier)  •  ✨ shiny  •  last {PRICE_LOOKBACK_MONTHS} months"
     )
 
     if not rows:
@@ -509,7 +509,7 @@ def _build_srinfo_view(name: str, denom: int, chance: str, pct: str,
         total_sales = price_data.get("total_sales", price_data["count"])
         outlier_s   = f"  _(+{removed} extreme sale{'s' if removed > 1 else ''} ignored)_" if removed else ""
         price_block = (
-            f"**💰 Shiny Auction Prices** _(✨ shiny  •  last 3 months)_\n"
+            f"**💰 Shiny Auction Prices** _(✨ shiny  •  last {PRICE_LOOKBACK_MONTHS} months)_\n"
             f"{REPLY} Median: `{_fmt(price_data['median'])}`{outlier_s}\n"
             f"{REPLY} Typical range: `{_fmt(price_data['p25'])}` – `{_fmt(price_data['p75'])}` _(middle 50% of sales)_\n"
             f"{REPLY} Total sales: `{total_sales:,}`"
