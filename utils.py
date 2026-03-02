@@ -806,27 +806,52 @@ def build_query(
         # ── Name → UNION into name_pool ───────────────────────────────────────
         if canonical == "--name":
             if expand_name_by_dex:
-                # ── New FormsDB-based expansion ───────────────────────────────
-                # 1. Try FormsDB first (handles base names and exact form names)
-                forms_result = get_forms_db().resolve_name_to_forms(val)
-                if forms_result:
-                    _pool_add(forms_result)
+                # Strip trailing 'only' keyword (case-insensitive)
+                # e.g. "blastoise only" → exact=True, val="blastoise"
+                exact_only = False
+                val_stripped = val.strip()
+                if val_stripped.lower().endswith(" only"):
+                    exact_only = True
+                    val_stripped = val_stripped[:-5].strip()  # remove " only"
+
+                if exact_only:
+                    # Resolve to a single canonical name, no form expansion
+                    resolved = resolve_pokemon_name(val_stripped)
+                    if resolved:
+                        _pool_add({resolved})
+                    else:
+                        # Fallback: substring search but NO form expansion
+                        norm_words = normalize(val_stripped).split()
+                        name_db    = get_name_db()
+                        matches: set[str] = {
+                            canonical_name
+                            for norm_key, canonical_name in name_db._map.items()
+                            if all(w in norm_key for w in norm_words)
+                        }
+                        if matches:
+                            _pool_add(matches)
                 else:
-                    # 2. Fallback: normalised substring search across all known names
-                    norm_words = normalize(val).split()
-                    name_db    = get_name_db()
-                    matches: set[str] = {
-                        canonical_name
-                        for norm_key, canonical_name in name_db._map.items()
-                        if all(w in norm_key for w in norm_words)
-                    }
-                    if matches:
-                        # Expand each substring match through FormsDB too
-                        expanded: set[str] = set()
-                        for m in matches:
-                            sub_forms = get_forms_db().resolve_name_to_forms(m)
-                            expanded.update(sub_forms if sub_forms else {m})
-                        _pool_add(expanded)
+                    # ── FormsDB-based expansion (default) ────────────────────
+                    # 1. Try FormsDB first (handles base names and exact form names)
+                    forms_result = get_forms_db().resolve_name_to_forms(val_stripped)
+                    if forms_result:
+                        _pool_add(forms_result)
+                    else:
+                        # 2. Fallback: normalised substring search across all known names
+                        norm_words = normalize(val_stripped).split()
+                        name_db    = get_name_db()
+                        matches = {
+                            canonical_name
+                            for norm_key, canonical_name in name_db._map.items()
+                            if all(w in norm_key for w in norm_words)
+                        }
+                        if matches:
+                            # Expand each substring match through FormsDB too
+                            expanded: set[str] = set()
+                            for m in matches:
+                                sub_forms = get_forms_db().resolve_name_to_forms(m)
+                                expanded.update(sub_forms if sub_forms else {m})
+                            _pool_add(expanded)
             else:
                 # ── Original single-name resolution (non-auction cogs) ────────
                 resolved = resolve_pokemon_name(val)
