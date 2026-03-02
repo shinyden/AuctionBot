@@ -754,17 +754,52 @@ def format_date(record: dict) -> str:
     return dt.strftime("%-m/%-d/%y")
 
 
-def iv_bar(value: int | None) -> str:
-    """Return a text progress bar for a 0-31 IV value."""
+def iv_bar(value: int | None, max_val: int = 31, length: int = config.IV_BAR_LENGTH) -> str:
+    """Build a progress bar using custom Discord emojis. length = total segments."""
     if value is None:
-        return IV_BAR_EMPTY * IV_BAR_LENGTH
-    filled = round(value / 31 * IV_BAR_LENGTH)
-    return IV_BAR_FILLED * filled + IV_BAR_EMPTY * (IV_BAR_LENGTH - filled)
+        value = 0
+    filled = round((value / max_val) * length)
+    filled = max(0, min(filled, length))
+    empty  = length - filled
+
+    # length is: 1 start + (length-2) mids + 1 end
+    inner = length - 2  # number of mid slots
+
+    if filled == 0:
+        # All empty
+        bar = config.EMPTY_START + config.EMPTY_MID * inner + config.EMPTY_END
+    elif filled == length:
+        # All filled
+        bar = config.FILLED_START + config.FILLED_MID * inner + config.FILLED_END
+    else:
+        # Mixed — filled segments use filled emojis, empty use empty emojis
+        # filled covers: start + some mids; empty covers: remaining mids + end
+        filled_mids = max(0, filled - 1)       # start takes 1 filled slot
+        empty_mids  = max(0, inner - filled_mids)  # remaining mid slots go empty
+
+        if empty > 0:
+            # last segment is empty_end
+            bar = (
+                config.FILLED_START
+                + config.FILLED_MID * filled_mids
+                + config.EMPTY_MID  * empty_mids
+                + config.EMPTY_END
+            )
+        else:
+            # no empty mids, just filled + filled_end
+            bar = (
+                config.FILLED_START
+                + config.FILLED_MID * (inner - 0)
+                + config.FILLED_END
+            )
+
+    return bar
 
 
 def iv_line(label: str, value: int | None) -> str:
-    val_s = str(value) if value is not None else "???"
-    return f"`{label:<4}` {iv_bar(value)} `{val_s}/31`"
+    val_s = str(value) if value is not None else "?"
+    bar   = iv_bar(value)
+    return f"`{label:>3}` {bar} `{val_s:>2}`"
 
 
 def format_winning_bid(record: dict) -> str:
