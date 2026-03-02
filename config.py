@@ -61,11 +61,11 @@ IV_BAR_FILLED  = "█"
 IV_BAR_EMPTY   = "░"
 
 # ─── IV Bar Emojis ────────────────────────────────────────────────────────────
-FILLED_START = "<:filled_end:1477903258130448554>"
-FILLED_MID   = "<:filled_mid:1477903260621738016>"
-FILLED_END   = "<:filled_end:1477903258130448554>"
-EMPTY_START  = "<:empty_start:1477903263335710842>"
-EMPTY_MID    = "<:empty_mid:1477903253768507503>"
-EMPTY_END    = "<:empty_end:1477903255865397401>"
+FILLED_START = "<:1_:1477903265415823472>"
+FILLED_MID   = "<:2_:1477903260621738016>"
+FILLED_END   = "<:3_:1477903258130448554>"
+EMPTY_START  = "<:4_:1477903263335710842>"
+EMPTY_MID    = "<:5_:1477903253768507503>"
+EMPTY_END    = "<:6_:1477903255865397401>"
 
 IV_BAR_LENGTH = 17  # total segments (start + mids + end)
