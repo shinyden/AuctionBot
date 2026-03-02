@@ -152,23 +152,38 @@ def _error_view(text: str) -> discord.ui.LayoutView:
 # MONGODB  — avg price lookup per Pokémon name list
 # ═════════════════════════════════════════════════════════════════════════════
 
+# How far back to look for price data — keeps results reflecting current market.
+PRICE_LOOKBACK_MONTHS = 3
+
+
 def _fetch_avg_prices(names: list[str]) -> dict[str, dict]:
     """
     For a list of canonical Pokémon names, return a dict:
-      name → {"avg": float, "count": int, "min": float, "max": float,
-              "outliers_removed": int, "total_sales": int}
+      name → {"avg": float, "median": float, "p25": float, "p75": float,
+              "count": int, "outliers_removed": int, "total_sales": int}
 
-    Only shiny (non-gmax) auctions are considered.
+    Only shiny (non-gmax) auctions from the last PRICE_LOOKBACK_MONTHS are considered.
 
     Outlier removal (same IQR method as graph.py):
       fence = Q3 + 3.0 * IQR
-      Bids above the fence are excluded from avg / min / max / count.
+      Bids above the fence are excluded from stats.
       If fewer than 3 clean bids remain, raw data is used as-is.
     """
     import numpy as np
+    import time as _time
+    from datetime import datetime, timezone
 
     if not names:
         return {}
+
+    # Cutoff timestamp — only auctions from the last N months
+    now       = datetime.now(timezone.utc)
+    cut_month = now.month - PRICE_LOOKBACK_MONTHS
+    cut_year  = now.year
+    while cut_month <= 0:
+        cut_month += 12
+        cut_year  -= 1
+    cutoff_ts = int(datetime(cut_year, cut_month, now.day, tzinfo=timezone.utc).timestamp())
 
     # Fetch every individual bid so we can run IQR filtering in Python
     pipe = [
@@ -177,6 +192,7 @@ def _fetch_avg_prices(names: list[str]) -> dict[str, dict]:
             "sh":  True,
             "gx":  {"$ne": True},
             "bid": {"$exists": True},
+            "ts":  {"$gte": cutoff_ts},
         }},
         {"$group": {
             "_id":  "$pn",
@@ -196,6 +212,8 @@ def _fetch_avg_prices(names: list[str]) -> dict[str, dict]:
         bids = r["bids"]
         if not bids:
             continue
+        log.debug("_fetch_avg_prices: pn=%r  total_bids=%d  sample_max=%s",
+                  raw_name, len(bids), max(bids))
 
         arr        = np.array(bids, dtype=float)
         q1, q3     = np.percentile(arr, 25), np.percentile(arr, 75)
@@ -280,7 +298,7 @@ def _build_srlb_view(
     title       = f"## 🎲 Spawn Rate `1/{denom}` — {order_label}"
     sub         = (
         f"-# Showing top `{len(rows)}` of `{total_with_data}` Pokémon with auction data "
-        f"(`{total_in_tier}` total in this tier)  •  ✨ shiny auctions only"
+        f"(`{total_in_tier}` total in this tier)  •  ✨ shiny  •  last 3 months"
     )
 
     if not rows:
@@ -490,7 +508,7 @@ def _build_srinfo_view(name: str, denom: int, chance: str, pct: str,
         total_sales = price_data.get("total_sales", price_data["count"])
         outlier_s   = f"  _(+{removed} extreme sale{'s' if removed > 1 else ''} ignored)_" if removed else ""
         price_block = (
-            f"**💰 Shiny Auction Prices** _(✨ shiny only)_\n"
+            f"**💰 Shiny Auction Prices** _(✨ shiny  •  last 3 months)_\n"
             f"{REPLY} Median: `{_fmt(price_data['median'])}`  •  Avg: `{_fmt(price_data['avg'])}`{outlier_s}\n"
             f"{REPLY} Typical range: `{_fmt(price_data['p25'])}` – `{_fmt(price_data['p75'])}` _(middle 50% of sales)_\n"
             f"{REPLY} Total sales: `{total_sales:,}`"
