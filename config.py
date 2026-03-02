@@ -59,4 +59,13 @@ POKEMON_DATA_CSV_FILE = DATA_DIR / "pokemon_data.csv"
 # ─── IV Bar Settings ──────────────────────────────────────────────────────────
 IV_BAR_FILLED  = "█"
 IV_BAR_EMPTY   = "░"
-IV_BAR_LENGTH  = 17
+
+# ─── IV Bar Emojis ────────────────────────────────────────────────────────────
+FILLED_START = "<:filled_start:1477901268159823932>"
+FILLED_MID   = "<:filled_mid:1477901207988211834>"
+FILLED_END   = "<:filled_end:1477901193475788800>"
+EMPTY_START  = "<:empty_start:1477901246860886268>"
+EMPTY_MID    = "<:empty_mid:1477901160290582528>"
+EMPTY_END    = "<:empty_end:1477901180209336434>"
+
+IV_BAR_LENGTH = 17  # total segments (start + mids + end)
