@@ -610,7 +610,7 @@ class UtilsCog(commands.Cog, name="Utils"):
     # j!srinfo  <pokemon name>
     # ──────────────────────────────────────────────────────────────────────────
 
-    @commands.hybrid_command(name="srinfo", aliases=["spawninfo"])
+    @commands.hybrid_command(name="srinfo", aliases=["spawninfo","spawnrate","sr"])
     @app_commands.describe(name="Pokémon name to look up")
     async def srinfo_cmd(self, ctx: commands.Context, *, name: str = ""):
         """
