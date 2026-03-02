@@ -758,23 +758,22 @@ def format_date(record: dict) -> str:
     return dt.strftime("%-m/%-d/%y")
 
 
-def iv_bar(value: int | None, max_val: int = 31, length: int = 9) -> str:
+def iv_bar(value: int | None, max_val: int = 31, length: int = 12) -> str:
+    import math
     if value is None:
         value = 0
 
-    # Use only first (length-1) segments for the actual bar,
-    # last segment is reserved: filled only if value == max_val
     inner_length = length - 1
-    filled = round((value / max_val) * inner_length)
-    filled = max(0, min(filled, inner_length))
+    if value == 0:
+        filled = 0
+    else:
+        filled = max(1, round((value / max_val) * inner_length))
+    filled = min(filled, inner_length)
 
-    # Last segment
     last_filled = (value == max_val)
-
     total_filled = filled + (1 if last_filled else 0)
-    total_empty  = length - total_filled
 
-    inner = length - 2  # mid slots
+    inner = length - 2
 
     if total_filled == 0:
         bar = EMPTY_START + EMPTY_MID * inner + EMPTY_END
