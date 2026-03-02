@@ -439,6 +439,71 @@ class TokenReader:
 
 
 # ─────────────────────────────────────────────────────────────────────────────
+# EXCLUDE HELPER
+# ─────────────────────────────────────────────────────────────────────────────
+
+def _resolve_exclude_names(val: str, expand_name_by_dex: bool) -> set[str]:
+    """
+    Given a value from --exclude / --ex, return the set of canonical Pokémon
+    names to subtract from the final result.
+
+    Resolution order (first match wins):
+      1. Category  (e.g. "event", "rares", "legendary")
+      2. Evo family (e.g. "pikachu" → entire evo line)
+      3. Type      (e.g. "fire", "water")
+      4. Region    (e.g. "kanto", "galar")
+      5. Name      (exact canonical name, expanded by dex if expand_name_by_dex)
+    """
+    from categories import resolve_category as _resolve_cat
+
+    val = val.strip()
+
+    # 1. Category
+    cat = _resolve_cat(val)
+    if cat:
+        return set(cat["pokemon"])
+
+    # 2. Evo family
+    family = get_evo_family(val)
+    if family:
+        return set(family)
+
+    # 3. Type
+    type_names = get_pokemon_data_db().get_names_by_type([val])
+    if type_names:
+        return set(type_names)
+
+    # 4. Region
+    region_names = get_pokemon_data_db().get_names_by_region(val)
+    if region_names:
+        return set(region_names)
+
+    # 5. Name (canonical or fuzzy fallback)
+    resolved = resolve_pokemon_name(val)
+    if resolved:
+        if expand_name_by_dex:
+            dex_names = get_dex_family_names(resolved)
+            return set(dex_names) if dex_names else {resolved}
+        return {resolved}
+
+    # Fuzzy substring fallback (same as --name)
+    norm_words = normalize(val).split()
+    name_db    = get_name_db()
+    matches: set[str] = {
+        canonical_name
+        for norm_key, canonical_name in name_db._map.items()
+        if all(w in norm_key for w in norm_words)
+    }
+    if matches and expand_name_by_dex:
+        expanded: set[str] = set()
+        for m in matches:
+            expanded.update(get_dex_family_names(m))
+        return expanded
+
+    return matches
+
+
+# ─────────────────────────────────────────────────────────────────────────────
 # QUERY BUILDER
 # ─────────────────────────────────────────────────────────────────────────────
 
@@ -451,7 +516,7 @@ def build_query(
 
     Name-pool logic
     ───────────────
-    Two independent sets are built, then combined at the end:
+    Three independent sets are built, then combined at the end:
 
     name_pool  – UNION set, grown by --name and --evo.
                  Each new --name / --evo adds its names to the pool.
@@ -461,16 +526,25 @@ def build_query(
                  Each narrowing filter intersects the running set.
                  If no narrowing filters were given, narrow_set stays None.
 
+    exclude_set – SUBTRACTION set, grown by --exclude / --ex.
+                  Resolved against categories → evo families → types →
+                  regions → names (first match wins per value).
+                  Subtracted from the final pn set at the very end.
+                  If no pool/narrow filter exists, emits a $nin clause instead.
+
     Final pn filter:
-      • Neither supplied            → no pn filter (match everything)
-      • Only name_pool              → pn.$in = name_pool
-      • Only narrow_set             → pn.$in = narrow_set
-      • Both                        → pn.$in = name_pool ∩ narrow_set
+      • Neither pool nor narrow, no exclude  → no pn filter (match everything)
+      • Only name_pool                        → pn.$in = name_pool − exclude_set
+      • Only narrow_set                       → pn.$in = narrow_set − exclude_set
+      • Both                                  → pn.$in = (name_pool ∩ narrow_set) − exclude_set
+      • Only exclude_set                      → pn.$nin = exclude_set
 
     This means:
-      --n arceus --n pikachu           → pool = {all Arceus forms} ∪ {all Pikachu forms}
-      --ev --n arceus --type electric  → pool = event mons ∪ Arceus forms,
-                                         then narrow to electric-type only
+      --n arceus --n pikachu            → pool = {all Arceus forms} ∪ {all Pikachu forms}
+      --ev --n arceus --type electric   → pool = event mons ∪ Arceus forms,
+                                          then narrow to electric-type only
+      --rares --ex event                → rares that are NOT event Pokémon
+      --ex event                        → everything EXCEPT event Pokémon ($nin)
 
     Parameters
     ----------
@@ -493,11 +567,13 @@ def build_query(
     limit: int | None  = None
 
     # ── Name resolution accumulators ──────────────────────────────────────────
-    # name_pool : grown by --name / --evo  (UNION semantics)
-    # narrow_set: shrunk by --category / --type / --region  (INTERSECT semantics)
+    # name_pool  : grown by --name / --evo            (UNION semantics)
+    # narrow_set : shrunk by --category / --type / --region  (INTERSECT semantics)
+    # exclude_set: grown by --exclude / --ex          (SUBTRACTION semantics)
     name_pool:   set[str] | None = None   # None = not yet used
     narrow_set:  set[str] | None = None   # None = not yet used
-    type_filters: list[str] = []          # accumulates up to 2 --type values
+    exclude_set: set[str]        = set()  # names to remove from final result
+    type_filters: list[str]      = []     # accumulates up to 2 --type values
 
     def _pool_add(names: set[str]) -> None:
         """Add names to the name_pool (union)."""
@@ -578,7 +654,7 @@ def build_query(
                 sort = [(field, direction)]
             continue
 
-        # ── Category (--category <n>) → INTERSECT into narrow_set ────────────────────
+        # ── Category (--category <n>) → INTERSECT into narrow_set ────────────
         if canonical == "--category":
             cat = resolve_category(val)
             if cat:
@@ -613,6 +689,13 @@ def build_query(
             names = get_pokemon_data_db().get_names_by_region(val.strip())
             if names:
                 _narrow_intersect(set(names))
+            continue
+
+        # ── Exclude → SUBTRACT from final name set ────────────────────────────
+        if canonical == "--exclude":
+            excluded = _resolve_exclude_names(val, expand_name_by_dex)
+            if excluded:
+                exclude_set.update(excluded)
             continue
 
         # ── Name → UNION into name_pool ───────────────────────────────────────
@@ -723,14 +806,17 @@ def build_query(
                 query[mongo_field] = existing
 
     # ── Assemble final pn filter ──────────────────────────────────────────────
+    #
     # name_pool  = union of --name / --evo results
-    # narrow_set = intersection of --type / --region results
+    # narrow_set = intersection of --type / --region / --category results
+    # exclude_set= union of all --exclude / --ex results
     #
     # Rules:
-    #   pool only   → match exactly those names
-    #   narrow only → match exactly those names
-    #   both        → match names present in BOTH (pool ∩ narrow)
-    #   neither     → no pn filter (match all)
+    #   pool + narrow → match names in BOTH, then subtract exclude_set
+    #   pool only     → match pool names, then subtract exclude_set
+    #   narrow only   → match narrow names, then subtract exclude_set
+    #   exclude only  → $nin exclude_set (no positive filter needed)
+    #   none          → no pn filter (match all)
     if name_pool is not None or narrow_set is not None:
         if name_pool is not None and narrow_set is not None:
             final_names = name_pool & narrow_set
@@ -738,7 +824,15 @@ def build_query(
             final_names = name_pool
         else:
             final_names = narrow_set  # type: ignore[assignment]
+
+        if exclude_set:
+            final_names -= exclude_set
+
         query["pn"] = {"$in": list(final_names)}
+
+    elif exclude_set:
+        # No positive filter — exclude via $nin so all non-excluded mons match
+        query["pn"] = {"$nin": list(exclude_set)}
 
     if and_clauses:
         query.setdefault("$and", []).extend(and_clauses)
